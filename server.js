@@ -6185,12 +6185,13 @@ app.post("/login", (request, response, next) => {
   encrypted_password = sha256(request.body.password).toUpperCase(); // get the password and encrypt it to a sha256 hash which we can use for validation.
   let account_unvalidated = userAccounts[encrypted_password];
   if(!account_unvalidated){
+    console.error('Someone tried logging in with an invalid password.')
     response.status(406).json({
       status: 406,
       success: false,
       message: "Mismatch, the password provided is invalid.",
     });
-  }
+  } else {
   if (request.body.username == account_unvalidated.name) {
     // native code for sending the request back below
     let account = account_unvalidated; // GG, we got the account.
@@ -6205,16 +6206,17 @@ app.post("/login", (request, response, next) => {
       success: success,
       action: action,
     };
-
-    axios
-      .post(url, data)
-      .then((response) => {
-        console.log(response);
-      })
-      .catch((error) => {
-        console.error(`[ERROR at login handler SERVER.js]:  ${error}`);
-      });
-  };
+    
+    console.log('Received a request!')
+  } else {
+    console.error('Someone tried to login with the wrong password-username combination.')
+      response.status(406).json({
+      status: 406,
+      success: false,
+      message: "Match between username and password is invalid.",
+    });
+  }
+  }
 });
 // Websocket behavior
 const sockets = (() => {
