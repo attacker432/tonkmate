@@ -1,0 +1,15 @@
+{
+    "blacklist": 19,
+    "guest": 8,
+    "member": 10,
+    "trusted member": 14,
+    "member_female": 5,
+    "ambassador": 4,
+    "bugfinder": 15,
+    "moderator": 3,
+    "admin": 12,
+    "undercover admin": 8,
+    "owner": 1,
+    "co-dev": 11,
+    "developer": 11
+}
