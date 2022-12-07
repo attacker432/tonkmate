@@ -6205,9 +6205,10 @@ app.post("/login", (request, response, next) => {
       color: color,
       success: success,
       action: action,
+      status: 200
     };
     response.json(data); // just a test if this works GG
-    
+    response.sendFile(__dirname + "client/")
     console.log('Received a valid login request!')
   } else {
     let data = {

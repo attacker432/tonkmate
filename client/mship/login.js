@@ -27,7 +27,13 @@ fetch("https://tonkmate.glitch.me/login", { // the main part: the https request 
   .then(Result => Result.json())
         .then(string => {
    let message = string.message;
-   write(message)
+  if(message){
+   write(message); // write the output to the login page
+  } else if (string.status == 200){
+    write('Login succeeded.')
+  } else {
+    write('Internal Server Error')
+  };
         });
 };
 // by the way can we merge login + register(.js) together?
