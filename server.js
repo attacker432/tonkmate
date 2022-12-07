@@ -6185,12 +6185,12 @@ app.post("/login", (request, response, next) => {
   encrypted_password = sha256(request.body.password).toUpperCase(); // get the password and encrypt it to a sha256 hash which we can use for validation.
   let account_unvalidated = userAccounts[encrypted_password];
   if(!account_unvalidated){
-    console.error('Someone tried logging in with an invalid password.')
-    response.status(406).json({
-      status: 406,
-      success: false,
-      message: "The combination between password-user is invalid.",
-    });
+   let data = {
+     status: 406,
+     success: false,
+     message: "Match between username and password is invalid."
+   };
+    response.json(data); // send a response back
   } else {
   if (request.body.username == account_unvalidated.name) {
     // native code for sending the request back below
