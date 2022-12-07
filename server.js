@@ -10084,13 +10084,17 @@ setTimeout(() => {
 
 //const Eris = require("eris");
 const client = new Client({
-  partials: ["MESSAGE", "REACTION", "GUILDMEMBER", Partials.Channel, Partials.User],
+  partials: ["MESSAGE", "REACTION", "GUILD_MEMBER", "CHANNEL", "USER", "GUILD_SCHEDULED_EVENT", "DIRECT_MESSAGES"],
   intents: [
     GatewayIntentBits.Guilds,
     GatewayIntentBits.GuildMessages,
     GatewayIntentBits.MessageContent,
     GatewayIntentBits.GuildMembers,
-  ],
+    GatewayIntentBits.DirectMessages,
+    GatewayIntentBits.DirectMessageReactions,
+    GatewayIntentBits.DirectMessageTyping,
+  ], 
+ // intents: 3243773
 });
 const {
   EmbedBuilder,
