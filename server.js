@@ -10084,7 +10084,6 @@ setTimeout(() => {
 
 //const Eris = require("eris");
 const client = new Client({
-  partials: ["MESSAGE", "REACTION", "GUILD_MEMBER", "CHANNEL", "USER", "GUILD_SCHEDULED_EVENT", "DIRECT_MESSAGES"],
   intents: [
     GatewayIntentBits.Guilds,
     GatewayIntentBits.GuildMessages,
@@ -10094,6 +10093,7 @@ const client = new Client({
     GatewayIntentBits.DirectMessageReactions,
     GatewayIntentBits.DirectMessageTyping,
   ], 
+  partials: [Partials.Message, Partials.Reactions, "GUILD_MEMBER", "CHANNEL", "USER", "GUILD_SCHEDULED_EVENT"],
  // intents: 3243773
 });
 const {
@@ -10119,7 +10119,8 @@ client.on("ready", () => {
             }]
         })
 });
-
+//client.on('debug', console.log)
+      client.on('warn', console.log)
 client.on("messageCreate", (msg) => {});
 //const bot = new Eris(process.env.bot_token);
 //const bot2 = new Eris(process.env.bot_token);
@@ -10162,6 +10163,7 @@ function parse(input) {
 }
 client.on("messageCreate", (msg) => {
   try{
+    console.log(msg.partial)
   let user_admin = msg.member.roles.cache.has(admin_role_id);
  // let user_admin = msg.author.roles.cache.has('role-id-here');
   if (msg.content.startsWith(prefix + "help")) {
