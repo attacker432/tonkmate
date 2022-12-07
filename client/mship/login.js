@@ -11,6 +11,20 @@ document.getElementById("result").innerHTML = "";
       document.getElementById("result").innerHTML += string
       document.getElementById("result").innerHTML += '</br>'
     } // define the function which writes to the result element.
+
+let data = {
+  password: password,
+  username: name
 };
-if(name == )
+
+fetch("https://tonkmate.glitch.me/login", { // the main part: the https request to the server.
+  method: 'POST',
+  body: JSON.stringify(data), // convert it into json
+   headers: {
+    'Content-Type': 'application/json'
+  }
+  }).then(res => {
+  console.log("Request complete! response:", res);
+});
+};
 // by the way can we merge login + register(.js) together?
