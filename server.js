@@ -10103,11 +10103,16 @@ client.login(process.env.bot_token);
 client.on("ready", () => {
   console.log("Bot ready!");
   client.user.setActivity(
-    `to ${client.guilds.cache
-      .map((guild) => guild.memberCount)
-      .reduce((p, c) => p + c)} users`,
+    `Tankmate.ml`,
     { type: "LISTENING" }
   );
+  client.user.setPresence({
+            status: ,
+            activities: [{
+                name: config.status.name,
+                type: ActivityType.Playing ,
+            }]
+        })
 });
 
 client.on("messageCreate", (msg) => {});
@@ -10115,11 +10120,11 @@ client.on("messageCreate", (msg) => {});
 //const bot2 = new Eris(process.env.bot_token);
 var prefix = process.env.prefix;
 var owner_id = process.env.owner_discord_id;
-var felix = process.env.felix_id;
-var owner_attacker = process.env.owner_attacker;
+var felix = process.env.owner_felix_id;
+var owner_attacker = process.env.owner_attacker_id;
 var owner_c = process.env.owner_costiko_id;
 var bt_ids = process.env.bt_id_1;
-
+var admin_role_id = '1049988446875299892';
 function sendChatMessage() {
   const channel = client.channels.cache.get("1038205427319586876");
 
