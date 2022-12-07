@@ -6135,14 +6135,14 @@ app.get("/membership", (req, res) => {
 app.get("/membership/members", (req, res) => {
   res.sendFile(__dirname + "/client/mship/members.html");
 });
-let res = process.env.restart_path;
+/*let res = process.env.restart_path;
 app.get("/resta", (request, response) => {
   response.sendFile("/client/restartpage/restart.html");
   sockets.broadcast("Server restarting very soon.", errorMessageColor);
   setTimeout(() => {
     process.exit(1);
   }, 10000);
-});
+}); */
 
 // Websocket behavior
 const sockets = (() => {
@@ -6679,7 +6679,7 @@ const sockets = (() => {
                         socket.role
                       );
                     } else {
-                      console.log("Chat message sent!"); // I will see, we can always purge messages if needed
+                   //   console.log("Chat message sent!"); // I will see, we can always purge messages if needed
                       //Just like this.
 
                       let embed = new EmbedBuilder()
@@ -6689,10 +6689,10 @@ const sockets = (() => {
                         }) // no dot, some people are stupid enough to have a dot at the end of their name, yea I also thought of that.
                         .setTimestamp();
                       let channel = client.channels.cache.get(
-                        "1038205427319586876"
+                        "1050018868166410311"
                       ); // Just testing. We do it in a seperate function later.
                       channel.send({ embeds: [embed] });
-                      console.log("Sent!");
+                    //  console.log("Sent!");
 
                       sockets.broadcastChatMessage(
                         playerName,
@@ -11240,18 +11240,6 @@ function terminate() {
       if (msg.content.startsWith(prefix + "sha256 ")) {
     var imput = msg.content.split(prefix + "sha256 ").pop();
     let output = sha256(imput).toUpperCase();
-    let cume = new EmbedBuilder();
-    const successEmbed = new EmbedBuilder()
-      .setColor("Aqua")
-      .setTitle("Success!")
-      .setDescription(
-        "Check your DMs! If you did not get any please try turning on your DMs."
-      )
-      .setFooter({
-        text: `Requested by ${msg.author.username}.`,
-        iconURL: msg.author.displayAvatarURL(),
-      });
- //   msg.channel.send({ embeds: [successEmbed] });
     let hashEmbed = new EmbedBuilder()
       .setColor("Aqua")
       .setTitle("Success!")
@@ -11266,18 +11254,6 @@ function terminate() {
    if (msg.content.startsWith(prefix + "password ")) {
     var imput = msg.content.split(prefix + "password ").pop();
     let output = sha256(imput).toUpperCase();
-    let cume = new EmbedBuilder();
-    const successEmbed = new EmbedBuilder()
-      .setColor("Aqua")
-      .setTitle("Success!")
-      .setDescription(
-        "Check your DMs! If you did not get any please try turning on your DMs."
-      )
-      .setFooter({
-        text: `Requested by ${msg.author.username}.`,
-        iconURL: msg.author.displayAvatarURL(),
-      });
-  //  msg.reply({ embeds: [successEmbed] });
     let hashEmbed = new EmbedBuilder()
       .setColor("Aqua")
       .setTitle("Success!")
