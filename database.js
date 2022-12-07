@@ -8,17 +8,20 @@ var data = {
   "felix": {
     "name": "Felix",
     "coins": "500",
-    "premium": "yes"
+    "premium": "yes",
+    "password": ""
   },
   "attacker": {
     "name": "Attacker",
     "coins": "500",
-    "premium": "yes"
+    "premium": "yes",
+    "password": ""
   },
   "cws": {
     "name": "CWS",
     "coins": "500",
-    "premium": "yes"
+    "premium": "yes",
+    "password": ""
    }
 } 
 exports.database = data;

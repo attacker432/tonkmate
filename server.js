@@ -6145,13 +6145,10 @@ app.get("/membership", (req, res) => {
 app.get("/membership/members", (req, res) => {
   res.sendFile(__dirname + "/client/mship/members.html");
 });
-
 // here is where I will write the API post request
 app.post("/login", (request, response, next) => {
-const database = require("./database.js");
-const data = database.database;
-// archieve
-// data['username']
+let encrypted_password = '';
+// userAccounts['password encrypted in sha256']
  // check if it includes a password for authentication
 if(!request.body.password){
   response.status(406).json({
@@ -6167,8 +6164,10 @@ if(!request.body.username){
          success: false,
         message: 'Username is required.'
       }); 
-};
-})
+};  
+
+encrypted_password = sha256(request.body.password).toUpperCase(); // get the password and encrypt it to a sha256 hash which we can use for validation.
+});
 // Websocket behavior
 const sockets = (() => {
   const protocol = require("./lib/fasttalk");
