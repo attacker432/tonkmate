@@ -12,5 +12,5 @@ document.getElementById("result").innerHTML = "";
       document.getElementById("result").innerHTML += '</br>'
     } // define the function which writes to the result element.
 };
-
+if(name == )
 // by the way can we merge login + register(.js) together?

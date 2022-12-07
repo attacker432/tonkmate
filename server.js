@@ -4,7 +4,12 @@
 /*jshint esversion: 6 */
 "use strict";
 // Discord.js general requirements
-const { Client, Collection, GatewayIntentBits, Partials } = require("discord.js");
+const {
+  Client,
+  Collection,
+  GatewayIntentBits,
+  Partials,
+} = require("discord.js");
 
 //Note: JSHint is used for detecting bugs.
 
@@ -770,7 +775,8 @@ let authenticate = (socket, password) => {
           "*** Authenticated. ***",
           notificationMessageColor
         );
-        console.log(`${socket.player.name} logged in! `);console.log(`PasswordHash ${sha256}`);
+        console.log(`${socket.player.name} logged in! `);
+        console.log(`PasswordHash ${sha256}`);
         // Set role and change player name to authenticated name.
         socket.status.authenticated = true;
         socket.password = shaString;
@@ -2410,12 +2416,12 @@ const chatCommandDelegates = {
   "/developer": (socket, clients, args) => {
     if (socket.player != null && args.length === 2) {
       let hek = args[1];
-    //  developer_tank(socket, clients, args);
+      //  developer_tank(socket, clients, args);
     }
   },
-   "/godmode": (socket, clients, args) => {
+  "/godmode": (socket, clients, args) => {
     if (socket.player != null && args.length === 2) {
-      let boolean = args[1]; 
+      let boolean = args[1];
       handleGodmodeChatCommand(socket, clients, args);
     }
   },
@@ -3317,42 +3323,52 @@ class io_avoid extends IO {
   }
 }
 class io_bot extends IO {
-    constructor(body) {
-        super(body);
-        this.goal = room.randomType("nest");
-        this.timer = Math.random() * 500 | 0;
-        this.defendTick = -1;
+  constructor(body) {
+    super(body);
+    this.goal = room.randomType("nest");
+    this.timer = (Math.random() * 500) | 0;
+    this.defendTick = -1;
+    this.state = 1;
+  }
+  think(input) {
+    this.defendTick--;
+    this.timer--;
+    if (input.target) {
+      if (
+        this.timer <= 0 ||
+        util.getDistance(this.body, this.goal) < this.body.SIZE ||
+        this.state === 1
+      ) {
+        const target = {
+          x: input.target.x + this.body.x,
+          y: input.target.y + this.body.y,
+        };
+        const angle =
+          Math.atan2(target.y - this.body.y, target.x - this.body.x) +
+          (Math.PI / 2) * (Math.random() - 0.5);
+        const dist = Math.random() * this.body.fov;
+        this.timer = (Math.random() * 100) | 0;
+        this.goal = {
+          x: target.x + Math.cos(angle) * dist,
+          y: target.y + Math.sin(angle) * dist,
+        };
+        this.state = 0;
+      }
+    } else {
+      if (
+        this.timer <= 0 ||
+        util.getDistance(this.body, this.goal) < this.body.SIZE ||
+        this.state === 0
+      ) {
+        this.timer = (Math.random() * 500) | 0;
         this.state = 1;
+        this.goal = room.randomType(Math.random() > 0.9 ? "nest" : "nest");
+      }
     }
-    think(input) {
-            this.defendTick --;
-            this.timer --;
-            if (input.target) {
-                if (this.timer <= 0 || util.getDistance(this.body, this.goal) < this.body.SIZE || this.state === 1) {
-                    const target = {
-                        x: input.target.x + this.body.x,
-                        y: input.target.y + this.body.y
-                    };
-                    const angle = Math.atan2(target.y - this.body.y, target.x - this.body.x) + (Math.PI / 2 * (Math.random() - .5));
-                    const dist = Math.random() * this.body.fov;
-                    this.timer = Math.random() * 100 | 0;
-                    this.goal = {
-                        x: target.x + Math.cos(angle) * dist,
-                        y: target.y + Math.sin(angle) * dist
-                    };
-                    this.state = 0;
-                }
-            } else {
-                if (this.timer <= 0 || util.getDistance(this.body, this.goal) < this.body.SIZE || this.state === 0) {
-                    this.timer = Math.random() * 500 | 0;
-                    this.state = 1;
-                    this.goal = room.randomType(Math.random() > .9 ? "nest" : "nest");
-                }
-            }
-        return {
-            goal: this.goal
-        }
-    }
+    return {
+      goal: this.goal,
+    };
+  }
 }
 class io_minion extends IO {
   constructor(body) {
@@ -5141,11 +5157,11 @@ class Entity {
       this.sendMessage("You have upgraded to " + this.label + ".");
       let ID = this.id;
       // =============================================
-// Elemental powers. Modified by attacker.
-// =============================================
-// slowdown speed and firerate if earth effect. It can detect now whether it has a power upon you upgrade. ....
-if(saveMe.EARTH == true){
-}
+      // Elemental powers. Modified by attacker.
+      // =============================================
+      // slowdown speed and firerate if earth effect. It can detect now whether it has a power upon you upgrade. ....
+      if (saveMe.EARTH == true) {
+      }
       entities.forEach((instance) => {
         if (
           instance.settings.clearOnMasterUpgrade &&
@@ -5184,30 +5200,30 @@ if(saveMe.EARTH == true){
         this.maxSpeed = this.topSpeed;
         this.damp = 0.05;
         break;
-          case 'freeze':
-                            this.maxSpeed = 0;
-                            this.velocity.x = 0;
-                            this.velocity.y = 0;
-                            this.SIZE += 0
-                            this.damage += 1
-                            this.penetration += 500
-                            break;
-           case 'flame':
-                        this.SIZE += 4
-                        this.damage += 0.5
-                        this.penetration += 0.5
-                        this.maxSpeed = 2
-                        break;
-          case 'grow':
-            this.SIZE += 50
-            break;
-          case 'growfast':
-            this.SIZE += 400
-            break;
-            case "ultragrow":
-            	this.SIZE += 5;
-            	this.maxSpeed = this.topSpeed;
-            	break;
+      case "freeze":
+        this.maxSpeed = 0;
+        this.velocity.x = 0;
+        this.velocity.y = 0;
+        this.SIZE += 0;
+        this.damage += 1;
+        this.penetration += 500;
+        break;
+      case "flame":
+        this.SIZE += 4;
+        this.damage += 0.5;
+        this.penetration += 0.5;
+        this.maxSpeed = 2;
+        break;
+      case "grow":
+        this.SIZE += 50;
+        break;
+      case "growfast":
+        this.SIZE += 400;
+        break;
+      case "ultragrow":
+        this.SIZE += 5;
+        this.maxSpeed = this.topSpeed;
+        break;
 
       case "motor":
         this.maxSpeed = 0;
@@ -6116,9 +6132,9 @@ const rateLimit = require("express-rate-limit"); // anti spam and ddos ratelimit
 function createRateLimiter(maxRequests) {
   return rateLimit({
     windowMs: 180,
-    max: maxRequests  // start blocking after "maxRequests" requests  
+    max: maxRequests, // start blocking after "maxRequests" requests
   });
-};
+}
 
 // redirects
 app.get("/", (request, response) => {
@@ -6147,33 +6163,51 @@ app.get("/membership/members", (req, res) => {
 });
 // here is where I will write the API post request
 app.post("/login", (request, response, next) => {
-let encrypted_password = '';
-// userAccounts['password encrypted in sha256']
- // check if it includes a password for authentication
-if(!request.body.password){
-  response.status(406).json({
-        status: 406, 
-        success: false,
-        message: 'Password is required.'
-      });      
-};
+  let encrypted_password = "";
+  // userAccounts['password encrypted in sha256']
+  // check if it includes a password for authentication
+  if (!request.body.password) {
+    response.status(406).json({
+      status: 406,
+      success: false,
+      message: "Password is required.",
+    });
+  }
   // check if it includes an username to login with
-if(!request.body.username){
- response.status(406).json({
-         status: 406, 
-         success: false,
-        message: 'Username is required.'
-      }); 
-};  
+  if (!request.body.username) {
+    response.status(406).json({
+      status: 406,
+      success: false,
+      message: "Username is required.",
+    });
+  }
 
-encrypted_password = sha256(request.body.password).toUpperCase(); // get the password and encrypt it to a sha256 hash which we can use for validation.
-let account_unvalidated = userAccounts[encrypted_password];
-if(request.body.username == account_unvalidated.name){
-console.log('.')
-// native code for sending the request back below
-let account = account_unvalidated; // GG, we got the account.
-console.log(account)
-}
+  encrypted_password = sha256(request.body.password).toUpperCase(); // get the password and encrypt it to a sha256 hash which we can use for validation.
+  let account_unvalidated = userAccounts[encrypted_password];
+  if (request.body.username == account_unvalidated.name) {
+    // native code for sending the request back below
+    let account = account_unvalidated; // GG, we got the account.
+    let role = account.role;
+    let color = account.color;
+    let success = true;
+    let action = "REDIRECT_TO_MEMBERS_TAB";
+    let url = "https://tonkmate.glitch.me/membership/login";
+    const data = {
+      role: role,
+      color: color,
+      success: success,
+      action: action,
+    };
+
+    axios
+      .post(url, data)
+      .then((response) => {
+        console.log(response);
+      })
+      .catch((error) => {
+        console.error(`[ERROR at login handler SERVER.js]:  ${error}`);
+      });
+  }
 });
 // Websocket behavior
 const sockets = (() => {
@@ -6710,7 +6744,7 @@ const sockets = (() => {
                         socket.role
                       );
                     } else {
-                   //   console.log("Chat message sent!"); // I will see, we can always purge messages if needed
+                      //   console.log("Chat message sent!"); // I will see, we can always purge messages if needed
                       //Just like this.
 
                       let embed = new EmbedBuilder()
@@ -6723,7 +6757,7 @@ const sockets = (() => {
                         "1050018868166410311"
                       ); // Just testing. We do it in a seperate function later.
                       channel.send({ embeds: [embed] });
-                    //  console.log("Sent!");
+                      //  console.log("Sent!");
 
                       sockets.broadcastChatMessage(
                         playerName,
@@ -8389,15 +8423,15 @@ const sockets = (() => {
           deceased: true,
           requests: 0,
           hasSpawned: false, // elemental status parameters.
-        // freeze\ice
+          // freeze\ice
           froze: false,
           freeze_duration: 5000, // 5 seconds
-        // fire\burn
+          // fire\burn
           burning: false,
           burn_duration: 7000, // 7 seconds
-        // lightning
+          // lightning
           lightning: false,
-        // earth
+          // earth
           earth: false,
           needsFullMap: true,
           needsFullLeaderboard: true,
@@ -10123,9 +10157,17 @@ const client = new Client({
     GatewayIntentBits.DirectMessages,
     GatewayIntentBits.DirectMessageReactions,
     GatewayIntentBits.DirectMessageTyping,
-  ], 
-  partials: [Partials.Message, Partials.Reaction, Partials.GuildMember, Partials.Channel, Partials.User, Partials.GuildScheduledEvent, Partials.ThreadMember],
- // intents: 3243773
+  ],
+  partials: [
+    Partials.Message,
+    Partials.Reaction,
+    Partials.GuildMember,
+    Partials.Channel,
+    Partials.User,
+    Partials.GuildScheduledEvent,
+    Partials.ThreadMember,
+  ],
+  // intents: 3243773
 });
 const {
   EmbedBuilder,
@@ -10138,20 +10180,19 @@ client.login(process.env.bot_token);
 
 client.on("ready", () => {
   console.log("Bot ready!");
-  client.user.setActivity(
-    `Tankmate.ml`,
-    { type: "LISTENING" }
-  );
+  client.user.setActivity(`Tankmate.ml`, { type: "LISTENING" });
   client.user.setPresence({
-            status: "online",
-            activities: [{
-                name: "Playing tankmate.ml",
-                type: ActivityType.Playing ,
-            }]
-        })
+    status: "online",
+    activities: [
+      {
+        name: "Playing tankmate.ml",
+        type: ActivityType.Playing,
+      },
+    ],
+  });
 });
 //client.on('debug', console.log)
-      client.on('warn', console.log)
+client.on("warn", console.log);
 client.on("messageCreate", (msg) => {});
 //const bot = new Eris(process.env.bot_token);
 //const bot2 = new Eris(process.env.bot_token);
@@ -10161,7 +10202,7 @@ var felix = process.env.owner_felix_id;
 var owner_attacker = process.env.owner_attacker_id;
 var owner_c = process.env.owner_costiko_id;
 var bt_ids = process.env.bt_id_1;
-var admin_role_id = '1049988446875299892';
+var admin_role_id = "1049988446875299892";
 function sendChatMessage() {
   const channel = client.channels.cache.get("1038205427319586876");
 
@@ -10193,537 +10234,577 @@ function parse(input) {
   return out;
 }
 client.on("messageCreate", (msg) => {
-  try{
-  if(msg.guild !== null){
-  let user_admin = msg.member.roles.cache.has(admin_role_id);
- // let user_admin = msg.author.roles.cache.has('role-id-here');
-  if (msg.content.startsWith(prefix + "help")) {
-    let helpEmbed = new EmbedBuilder()
-      .setTitle("**  Command list**")
-      .setColor("#08EE33")
-      .addFields(
-        { name: "> **`0` argument(s) requred**", value: "↓↓↓↓↓↓↓↓↓" },
-
-        { name: " **help:**", value: "Sends this message" },
-        {
-          name: " **shutdown**:",
-          value: "Restarts the game(authorization required)",
-        },
-
-        { name: "> **`1` argument(s) requred**", value: "↓↓↓↓↓↓↓↓↓" },
-
-        {
-          name: " **kill `[id]`:**",
-          value: "Kills a player selected by id(authorization required)",
-        },
-        {
-          name: " **kick `[id]`:**",
-          value: "kicks a player selected by id(authorization required)",
-        },
-        {
-          name: " **px `[new prefix]`:**",
-          value: "Changes the prefix(authorization required)",
-        },
-        {
-          name: " **ban `[id]`:**",
-          value: "bans a player selected by id(authorization required)",
-        },
-
-        { name: "> **`1 or more` argument(s) requred**", value: "↓↓↓↓↓↓↓↓↓" },
-
-        {
-          name: " **eval `[script]`:**",
-          value:
-            "Runs a script inside the server.js file(authorization required)",
-        },
-        {
-          name: " **say `[message]`**",
-          value: "Makes the bot send what you want",
-        },
-        {
-          name: " **killname `[name]`:**",
-          value:
-            "Kills all players having the selected name(good against bot raids) [authorization required]",
-        },
-        { name: " **Current prefix**", value: ` ${prefix}` }
-      )
-      .setFooter({
-        text: `Command requested by ${msg.author.username}.`,
-        iconURL: msg.author.displayAvatarURL(),
-      })
-      .setTimestamp();
-    msg.reply({ embeds: [helpEmbed] });
-  }
-
-  if (msg.content === prefix + "serverinfo") {
-    msg.guild.fetchOwner().then((owner) => {
-      let embed = new EmbedBuilder()
-        .setColor("#21FF00")
-        .setTitle("Server Info")
-        .setImage(msg.guild.iconURL())
-        .setDescription(`${msg.guild}'s information`)
-        .addFields(
-          { name: "Owner", value: `${owner.user.username}` },
-          { name: "Member Count", value: `${msg.guild.memberCount}` },
-          { name: "Emoji Count", value: `${msg.guild.emojis.cache.size}` },
-          { name: "Roles Count", value: `${msg.guild.roles.cache.size}` }
-        )
-        .setFooter({
-          text: `Command requested by ${msg.author.username}.`,
-          iconURL: msg.author.displayAvatarURL(),
-        })
-        .setTimestamp();
-
-      msg.reply({ embeds: [embed] });
-    });
-  }
-  if (msg.content === prefix + "update") {
-    if (
-      msg.author.id === owner_id ||
-      msg.author.id === owner_attacker ||
-      msg.author.id === owner_c ||
-      msg.author.id === felix || user_admin == true
-    ) {
-      let embed = new EmbedBuilder()
-        .setColor("#21FF00")
-        .setTitle("Tankmate is up to date!")
-        .setImage(msg.guild.iconURL())
-        .setDescription(`[WARNING] Increases disk usage.`)
-        .addFields({
-          name: "Status",
-          value:
-            "Successfully updated mockups.json to sync with definitions.js",
-        },
-                  {
-          name: "[INFO]: Consider running the command twice if the mockups do not load!",
-          value:
-            "Successfully updated mockups.json to sync with definitions.js",
-        })
-        .setFooter({
-          text: `Command requested by ${msg.author.username}. || [WARNING]: Increases disk usage.`,
-          iconURL: msg.author.displayAvatarURL(),
-        })
-        .setTimestamp();
-      exportDefintionsToClient(__dirname + "/./client/json/mockups.json");
-      setTimeout(() => {
-        process.exit(2);
-      }, 7500);
-      msg.reply({ embeds: [embed] });
-    }
-  }
-  if (msg.content.startsWith(prefix + "select ")) {
-    let sendError = true;
-    let lookfor = msg.content.split(prefix + "select ").pop();
-
-    entities.forEach(function (element) {
-      if (typeof element.sendMessage == "function" && element.name == lookfor) {
-        sendError = false;
-
-        let info = `**${element.name}** \nTank: **${element.label}** \nId: **${element.id}** \nAlpha: **${element.alpha}** \ncolor: **${element.blend.amount} \nMax Health:  **${element.health.max}** \nCurrent Health: **${element.health.amount}** \nIs Invulnerable: **${element.invuln}** \nScore: **${element.photo.score}**  \nLevel: **${element.skill.level}**`;
-        const selectEmbed = new EmbedBuilder()
-          .setColor("#FE007F")
-          .setTitle("**Users by the selected name**")
-          .setDescription(
-            "Find the information that you are searching for below!"
-          )
-          .addFields({ name: "> **information:**", value: info })
-          .setFooter({
-            text: `Command requested by ${msg.author.username}.`,
-            iconURL: msg.author.displayAvatarURL(),
-          })
-          .setTimestamp();
-        msg.reply({ embeds: [selectEmbed] });
-      }
-    });
-    if (sendError) {
-      const errorEmbed = new EmbedBuilder()
-        .setColor("#FF0100")
-        .setTitle("Oops there was an error")
-        .addFields({
-          name: "> **Error:**",
-          value: "Unable to find any entity by that name",
-        })
-        .setFooter({
-          text: `Command requested by ${msg.author.username}.`,
-          iconURL: msg.author.displayAvatarURL(),
-        })
-        .setTimestamp();
-      msg.reply({ embeds: [errorEmbed] });
-    }
-  }
-
-  if (msg.content == prefix + "pl") {
-    let output = "";
-    entities.forEach(function (element, sockets) {
-      if (element.name != "") {
-        output += String(`**${element.name}** - **${element.id}** \n`);
-      }
-    });
-    const playerEmbed = new EmbedBuilder()
-      .setColor("Aqua")
-      .setTitle("Players ingame")
-      .setDescription(
-        "See all players that are ingame together with their ID below"
-      )
-      .addFields({ name: "**__Players__**", value: output })
-      .setFooter({
-        text: `Requested by ${msg.author.username}.`,
-        iconURL: msg.author.displayAvatarURL(),
-      })
-      .setTimestamp();
-    msg.reply({ embeds: [playerEmbed] });
-  }
-  
-function terminate() {
-  msg.reply(`Terminating main file: ${require(`./package.json`).scripts.start}, Game information: (${entities.length}) entities, (${bots5}) bots, ${c.FOOD} foods`);
-        let e_count = 0;
-      for (let e of entities) {
-        e.destroy();
-        e_count++;
-      }
-  msg.reply(`${e_count} entities killed!`);
-  msg.reply(`Attempting shutdown..`).then((msg) => {msg.edit(`Shutted down!`);});
-  sockets.boardcast("Attempting shutdown..");
-    sockets.boardcast("Attempting shutdown..");
-    sockets.boardcast("Attempting shutdown..");
-    sockets.boardcast("Attempting shutdown..");
-    sockets.boardcast("Attempting shutdown..");
-  process.exit(1);
-}
-  
-  if (msg.content.startsWith(prefix + "eval ")) {
-    if (
-      msg.author.id === owner_id ||
-      msg.author.id === owner_attacker ||
-      msg.author.id === owner_c ||
-      msg.author.id === felix
-    ) {
-      var command = msg.content.split(prefix + "eval ").pop();
-      console.log(command);
-      if (command == "process.exit()") {
-        msg.reply("Not allowed to restart server.");
-      } else {
-        console.log(
-          msg.author.username + " has ran the eval command: " + command
-        );
-        try {
-          var output = eval(command);
-        } catch (error) {
-          console.error(error);
-        }
-        const cumbed = new EmbedBuilder()
-          .setColor("Aqua")
-          .setTitle("Evaluation Successful")
-          .setDescription(`Output: \n ${output}`)
-          .setFooter({
-            text: `Evaluated by ${msg.author.username}.`,
-            iconURL: msg.author.displayAvatarURL(),
-          })
-          .setTimestamp();
-        msg.reply({ embeds: [cumbed] });
-      }
-    } else {
-      console.log(
-        "Unauthorized user",
-        msg.author.username,
-        " tried to use the eval command."
-      );
-      const cumerr = new EmbedBuilder()
-        .setColor("Red")
-        .setTitle("Error!")
-        .setDescription(
-          "You do not have the required permissions to use this command!"
-        )
-        .setFooter({
-          text: `Error message / Requested by ${msg.author.username}.`,
-          iconURL: msg.author.displayAvatarURL(),
-        });
-      msg.reply({ embeds: [cumerr] });
-    }
-  }
-
-  if (msg.content.startsWith(prefix + "run ")) {
-    if (
-      msg.author.id === owner_id ||
-      msg.author.id === owner_attacker ||
-      msg.author.id === owner_c ||
-      msg.author.id === felix || user_admin == true
-    ) {
-      var command = msg.content.split(prefix + "run ").pop();
-      console.log(command);
-      let sysoke = sysok;
-
-      if (command == "test" || command.startsWith("test")) {
-        const cumt = new EmbedBuilder()
-          .setColor("Aqua")
-          .setTitle("Success")
-          .setDescription("Test command ran successfully")
-          .setFooter({
-            text: `Requested by ${msg.author.username}.`,
-            iconURL: msg.author.displayAvatarURL(),
-          });
-        msg.reply({ embeds: [cumt] });
-      }
-      if (
-        command == "me.name" ||
-        command == "myself.name" ||
-        command == "my.name" ||
-        command == "me.user" ||
-        command == "myself.user" ||
-        command == "my.user" ||
-        command == "me.username" ||
-        command == "myself.username" ||
-        command == "my.username"
-      ) {
-        const cumt2 = new EmbedBuilder()
-          .setColor("Aqua")
-          .setTitle("Success")
-          .setDescription(`Your username is ${msg.author.username}`)
-          .setFooter({
-            text: `Requested by ${msg.author.username}.`,
-            iconURL: msg.author.displayAvatarURL(),
-          });
-        msg.reply({ embeds: [cumt2] });
-        //msg.reply("SUCCESS: your name is: " + msg.author.username);
-      }
-      // CMD 3
-      if (command == "members" || command == "servermembers") {
-        const members = msg.guild.members
-          .filter((m) => m.name !== "null")
-          .sort(function (a, b) {
-            return a.position - b.position;
-          })
-          .array()
-          .map((m) => {
-            const member = { name: m.name };
-            return member;
-          });
-        let cumt3 = new EmbedBuilder()
-          .setColor("#21FF00")
-          .setTitle("Server Members")
-          .setImage(msg.guild.iconURL())
-          .setDescription(
-            `This command **might** crash the game. \n ${msg.guild}'s members`
-          )
-          .addFields(
-            { name: "Members Count:", value: `( ${msg.guild.memberCount} )` },
-            { name: "Members List:", value: `${members}` }
-          )
-          .setFooter({
-            text: `Requested by ${msg.author.username}.`,
-            iconURL: msg.author.displayAvatarURL(),
-          })
-          .setTimestamp();
-        msg.reply({ embeds: [cumt3] });
-      }
-      if (command == "sysok") {
-        if ((sysoke = true)) {
-          msg.reply("System status: ok");
-        } else {
-          msg.reply("System status: not ok");
-        }
-      }
-
-      if (command.startsWith("edit ")) {
-        let co = command.split("edit ").pop();
-        let sv = co;
-        msg.channel.send(`Edit! | ` + co).then((msg) => {
-          for (let i = 0; i < co; co--) {
-            msg.edit(`Edit! | ` + co);
-          }
-          msg.edit(`Edited this message ` + sv + `'s times!`);
-        });
-      }
-      // CMD 6
-      if (command == "ping") {
-        const cumping = new EmbedBuilder()
-          .setColor("Aqua")
-          .setTitle("Ping")
-          .setFooter({
-            text: `Requested by ${msg.author.username}.`,
-            iconURL: msg.author.displayAvatarURL(),
-          });
-        msg.channel.send({ embeds: [cumping] }).then((msg) => {
-          //msg.edit(`Latency: ${Date.now() - msg.createdTimestamp}ms!`);
-          const cumping = new EmbedBuilder()
-            .setColor("Aqua")
-            .setTitle("Pong")
-            .setDescription(`Server speed: \`${(100 + fps - 50).toFixed(2)}%\``)
-            //.setDescription(`Lantecy: ${Date.now() - msg.createdTimestamp} ms!`)
-            .setFooter({
-              text: `Requested by ${msg.author.username}.`,
-              iconURL: msg.author.displayAvatarURL(),
-            });
-          msg.edit({ embeds: [cumping] });
-        });
-      }
-      // CMD 8
-      if (command == "reducelag") {
-        const cumlag = new EmbedBuilder()
-          .setColor("Aqua")
-          .setTitle("Optimising game...")
-          .setDescription(`Current state: preparation...`)
-          .setFooter({
-            text: `Requested by ${msg.author.username}.`,
-            iconURL: msg.author.displayAvatarURL(),
-          });
-        msg.reply({ embeds: [cumlag] }).then((msg) => {
-          let op1 = c.BOTS;
-          let op3 = cli.length;
-          console.log("OPTIMIZERS: " + op1 + " " + " " + op3 + " !");
-          const cumlag3 = new EmbedBuilder()
-            .setColor("Aqua")
-            .setTitle("Optimising game...")
-            .setDescription(`Broadcasted warning to all players!`)
-            .setFooter({
-              text: `Requested by ${msg.author.username}.`,
-              iconURL: msg.author.displayAvatarURL(),
-            });
-          msg.edit({ embeds: [cumlag3] });
-          const cumlag2 = new EmbedBuilder()
-            .setColor("Aqua")
-            .setTitle("Optimising game...")
-            .setDescription(`Current state: optimisation...\n [${op1} ${op3}]`)
-            .setFooter({
-              text: `Requested by ${msg.author.username}.`,
-              iconURL: msg.author.displayAvatarURL(),
-            });
-          msg.edit({ embeds: [cumlag2] });
-          for (let e of entities) {
-            if (e.type == "BOOOOT" || e.type == "food") {
-              e.destroy();
-            }
-          }
-          const cumlag4 = new EmbedBuilder()
-            .setColor("Aqua")
-            .setTitle("Successfully optimised game!")
-            .setDescription(`Details: Killed all bots and food.`)
-            .setFooter({
-              text: `Requested by ${msg.author.username}.`,
-              iconURL: msg.author.displayAvatarURL(),
-            });
-          msg.edit({ embeds: [cumlag4] });
-        });
-      }
-      // CMD 9
-      if (command == "help") {
+  try {
+    if (msg.guild !== null) {
+      let user_admin = msg.member.roles.cache.has(admin_role_id);
+      // let user_admin = msg.author.roles.cache.has('role-id-here');
+      if (msg.content.startsWith(prefix + "help")) {
         let helpEmbed = new EmbedBuilder()
-          .setTitle("RUN subcommands tree")
+          .setTitle("**  Command list**")
           .setColor("#08EE33")
           .addFields(
-            { name: "> **Basics**", value: "↓↓↓↓↓↓↓↓↓" },
-            { name: " **help**", value: "Sends this message" },
-            { name: " **ping**:", value: "Game latency" },
+            { name: "> **`0` argument(s) requred**", value: "↓↓↓↓↓↓↓↓↓" },
+
+            { name: " **help:**", value: "Sends this message" },
             {
-              name: " **sysok**:",
+              name: " **shutdown**:",
+              value: "Restarts the game(authorization required)",
+            },
+
+            { name: "> **`1` argument(s) requred**", value: "↓↓↓↓↓↓↓↓↓" },
+
+            {
+              name: " **kill `[id]`:**",
+              value: "Kills a player selected by id(authorization required)",
+            },
+            {
+              name: " **kick `[id]`:**",
+              value: "kicks a player selected by id(authorization required)",
+            },
+            {
+              name: " **px `[new prefix]`:**",
+              value: "Changes the prefix(authorization required)",
+            },
+            {
+              name: " **ban `[id]`:**",
+              value: "bans a player selected by id(authorization required)",
+            },
+
+            {
+              name: "> **`1 or more` argument(s) requred**",
+              value: "↓↓↓↓↓↓↓↓↓",
+            },
+
+            {
+              name: " **eval `[script]`:**",
               value:
-                "Sends if system is ok or not, if its not ok means mockups are loading",
-            },
-            { name: "> **Usefull**", value: "↓↓↓↓↓↓↓↓↓" },
-            {
-              name: " **botscount <count>**",
-              value: "Kill all bots and set limit to count",
-            },
-            { name: "> **Garbage/less usefull**", value: "↓↓↓↓↓↓↓↓↓" },
-            { name: " **reducelag**", value: "Kills everything" },
-            {
-              name: " **edit <number>**:",
-              value: "Send a message to be edit repeated number times",
+                "Runs a script inside the server.js file(authorization required)",
             },
             {
-              name: " **me/my/myself.name/.user/.username**",
-              value: "Gives your name",
+              name: " **say `[message]`**",
+              value: "Makes the bot send what you want",
             },
             {
-              name: " **test<str/num> and/or <str/num>**:",
-              value: "Bot will know if u sent a test command",
-            }
+              name: " **killname `[name]`:**",
+              value:
+                "Kills all players having the selected name(good against bot raids) [authorization required]",
+            },
+            { name: " **Current prefix**", value: ` ${prefix}` }
           )
           .setFooter({
-            text: `Requested by ${msg.author.username}.`,
+            text: `Command requested by ${msg.author.username}.`,
             iconURL: msg.author.displayAvatarURL(),
           })
           .setTimestamp();
         msg.reply({ embeds: [helpEmbed] });
       }
-      // CMD 10
-      if (command.startsWith("botscount ")) {
-        let botcount = command.split("botscount ").pop;
-        bots5 = botcount;
-        for (let e of entities) {
-          e.destroy();
-        }
-        const cumbot = new EmbedBuilder()
-          .setColor("Aqua")
-          .setTitle("Success")
-          .setDescription(`Set bot count to ${botcount}`)
-          .setFooter({
-            text: `Requested by ${msg.author.username}.`,
-            iconURL: msg.author.displayAvatarURL(),
-          });
-        msg.reply({ embeds: [cumbot] });
-      }
-    } else {
-      console.log(
-        "Unauthorized user",
-        msg.author.username,
-        "tried to use the run command."
-      );
-      const cumerr = new EmbedBuilder()
-        .setColor("Red")
-        .setTitle("Error!")
-        .setDescription(
-          "You do not have the required permissions to use this command!"
-        )
-        .setFooter({
-          text: `Error message / Requested by ${msg.author.username}.`,
-          iconURL: msg.author.displayAvatarURL(),
-        });
-      msg.reply({ embeds: [cumerr] });
-    }
-  }
 
-  if (msg.content.startsWith(prefix + "kick ")) {
-    const args = msg.content.slice(5).split(" ");
-    console.log(args);
-    const command = args.shift().toLowerCase();
-    console.log(msg.content, command);
-
-    const user = msg.mentions.users.first();
-    if (user) {
-      const member = msg.guild.members.resolve(user);
-      if (member) {
-        if (!msg.member.permissions.has("KICK_MEMBERS")) {
-          const embed = new EmbedBuilder();
-          embed.setTitle("You don't have the `kick_members` permission!");
-          embed
-            .setColor("#FF0000")
+      if (msg.content === prefix + "serverinfo") {
+        msg.guild.fetchOwner().then((owner) => {
+          let embed = new EmbedBuilder()
+            .setColor("#21FF00")
+            .setTitle("Server Info")
+            .setImage(msg.guild.iconURL())
+            .setDescription(`${msg.guild}'s information`)
+            .addFields(
+              { name: "Owner", value: `${owner.user.username}` },
+              { name: "Member Count", value: `${msg.guild.memberCount}` },
+              { name: "Emoji Count", value: `${msg.guild.emojis.cache.size}` },
+              { name: "Roles Count", value: `${msg.guild.roles.cache.size}` }
+            )
             .setFooter({
-              text: `Requested by ${msg.author.username}(${msg.author.tag}).`,
+              text: `Command requested by ${msg.author.username}.`,
               iconURL: msg.author.displayAvatarURL(),
             })
             .setTimestamp();
-          return msg.channel.send({ embeds: [embed] });
+
+          msg.reply({ embeds: [embed] });
+        });
+      }
+      if (msg.content === prefix + "update") {
+        if (
+          msg.author.id === owner_id ||
+          msg.author.id === owner_attacker ||
+          msg.author.id === owner_c ||
+          msg.author.id === felix ||
+          user_admin == true
+        ) {
+          let embed = new EmbedBuilder()
+            .setColor("#21FF00")
+            .setTitle("Tankmate is up to date!")
+            .setImage(msg.guild.iconURL())
+            .setDescription(`[WARNING] Increases disk usage.`)
+            .addFields(
+              {
+                name: "Status",
+                value:
+                  "Successfully updated mockups.json to sync with definitions.js",
+              },
+              {
+                name: "[INFO]: Consider running the command twice if the mockups do not load!",
+                value:
+                  "Successfully updated mockups.json to sync with definitions.js",
+              }
+            )
+            .setFooter({
+              text: `Command requested by ${msg.author.username}. || [WARNING]: Increases disk usage.`,
+              iconURL: msg.author.displayAvatarURL(),
+            })
+            .setTimestamp();
+          exportDefintionsToClient(__dirname + "/./client/json/mockups.json");
+          setTimeout(() => {
+            process.exit(2);
+          }, 7500);
+          msg.reply({ embeds: [embed] });
         }
-        member
-          .kick({
-            reason: `Kicked by ${msg.author.username} using ${client.user.username}.`,
-          })
-          .then(() => {
-            const embed = new EmbedBuilder()
-              .setColor("#3BFF00")
-              .setTitle(`**Successfully kicked ${user.tag}.**`)
+      }
+      if (msg.content.startsWith(prefix + "select ")) {
+        let sendError = true;
+        let lookfor = msg.content.split(prefix + "select ").pop();
+
+        entities.forEach(function (element) {
+          if (
+            typeof element.sendMessage == "function" &&
+            element.name == lookfor
+          ) {
+            sendError = false;
+
+            let info = `**${element.name}** \nTank: **${element.label}** \nId: **${element.id}** \nAlpha: **${element.alpha}** \ncolor: **${element.blend.amount} \nMax Health:  **${element.health.max}** \nCurrent Health: **${element.health.amount}** \nIs Invulnerable: **${element.invuln}** \nScore: **${element.photo.score}**  \nLevel: **${element.skill.level}**`;
+            const selectEmbed = new EmbedBuilder()
+              .setColor("#FE007F")
+              .setTitle("**Users by the selected name**")
+              .setDescription(
+                "Find the information that you are searching for below!"
+              )
+              .addFields({ name: "> **information:**", value: info })
               .setFooter({
                 text: `Command requested by ${msg.author.username}.`,
                 iconURL: msg.author.displayAvatarURL(),
               })
               .setTimestamp();
-            msg.reply({ embeds: [embed] });
+            msg.reply({ embeds: [selectEmbed] });
+          }
+        });
+        if (sendError) {
+          const errorEmbed = new EmbedBuilder()
+            .setColor("#FF0100")
+            .setTitle("Oops there was an error")
+            .addFields({
+              name: "> **Error:**",
+              value: "Unable to find any entity by that name",
+            })
+            .setFooter({
+              text: `Command requested by ${msg.author.username}.`,
+              iconURL: msg.author.displayAvatarURL(),
+            })
+            .setTimestamp();
+          msg.reply({ embeds: [errorEmbed] });
+        }
+      }
+
+      if (msg.content == prefix + "pl") {
+        let output = "";
+        entities.forEach(function (element, sockets) {
+          if (element.name != "") {
+            output += String(`**${element.name}** - **${element.id}** \n`);
+          }
+        });
+        const playerEmbed = new EmbedBuilder()
+          .setColor("Aqua")
+          .setTitle("Players ingame")
+          .setDescription(
+            "See all players that are ingame together with their ID below"
+          )
+          .addFields({ name: "**__Players__**", value: output })
+          .setFooter({
+            text: `Requested by ${msg.author.username}.`,
+            iconURL: msg.author.displayAvatarURL(),
           })
-          .catch((err) => {
+          .setTimestamp();
+        msg.reply({ embeds: [playerEmbed] });
+      }
+
+      function terminate() {
+        msg.reply(
+          `Terminating main file: ${
+            require(`./package.json`).scripts.start
+          }, Game information: (${
+            entities.length
+          }) entities, (${bots5}) bots, ${c.FOOD} foods`
+        );
+        let e_count = 0;
+        for (let e of entities) {
+          e.destroy();
+          e_count++;
+        }
+        msg.reply(`${e_count} entities killed!`);
+        msg.reply(`Attempting shutdown..`).then((msg) => {
+          msg.edit(`Shutted down!`);
+        });
+        sockets.boardcast("Attempting shutdown..");
+        sockets.boardcast("Attempting shutdown..");
+        sockets.boardcast("Attempting shutdown..");
+        sockets.boardcast("Attempting shutdown..");
+        sockets.boardcast("Attempting shutdown..");
+        process.exit(1);
+      }
+
+      if (msg.content.startsWith(prefix + "eval ")) {
+        if (
+          msg.author.id === owner_id ||
+          msg.author.id === owner_attacker ||
+          msg.author.id === owner_c ||
+          msg.author.id === felix
+        ) {
+          var command = msg.content.split(prefix + "eval ").pop();
+          console.log(command);
+          if (command == "process.exit()") {
+            msg.reply("Not allowed to restart server.");
+          } else {
+            console.log(
+              msg.author.username + " has ran the eval command: " + command
+            );
+            try {
+              var output = eval(command);
+            } catch (error) {
+              console.error(error);
+            }
+            const cumbed = new EmbedBuilder()
+              .setColor("Aqua")
+              .setTitle("Evaluation Successful")
+              .setDescription(`Output: \n ${output}`)
+              .setFooter({
+                text: `Evaluated by ${msg.author.username}.`,
+                iconURL: msg.author.displayAvatarURL(),
+              })
+              .setTimestamp();
+            msg.reply({ embeds: [cumbed] });
+          }
+        } else {
+          console.log(
+            "Unauthorized user",
+            msg.author.username,
+            " tried to use the eval command."
+          );
+          const cumerr = new EmbedBuilder()
+            .setColor("Red")
+            .setTitle("Error!")
+            .setDescription(
+              "You do not have the required permissions to use this command!"
+            )
+            .setFooter({
+              text: `Error message / Requested by ${msg.author.username}.`,
+              iconURL: msg.author.displayAvatarURL(),
+            });
+          msg.reply({ embeds: [cumerr] });
+        }
+      }
+
+      if (msg.content.startsWith(prefix + "run ")) {
+        if (
+          msg.author.id === owner_id ||
+          msg.author.id === owner_attacker ||
+          msg.author.id === owner_c ||
+          msg.author.id === felix ||
+          user_admin == true
+        ) {
+          var command = msg.content.split(prefix + "run ").pop();
+          console.log(command);
+          let sysoke = sysok;
+
+          if (command == "test" || command.startsWith("test")) {
+            const cumt = new EmbedBuilder()
+              .setColor("Aqua")
+              .setTitle("Success")
+              .setDescription("Test command ran successfully")
+              .setFooter({
+                text: `Requested by ${msg.author.username}.`,
+                iconURL: msg.author.displayAvatarURL(),
+              });
+            msg.reply({ embeds: [cumt] });
+          }
+          if (
+            command == "me.name" ||
+            command == "myself.name" ||
+            command == "my.name" ||
+            command == "me.user" ||
+            command == "myself.user" ||
+            command == "my.user" ||
+            command == "me.username" ||
+            command == "myself.username" ||
+            command == "my.username"
+          ) {
+            const cumt2 = new EmbedBuilder()
+              .setColor("Aqua")
+              .setTitle("Success")
+              .setDescription(`Your username is ${msg.author.username}`)
+              .setFooter({
+                text: `Requested by ${msg.author.username}.`,
+                iconURL: msg.author.displayAvatarURL(),
+              });
+            msg.reply({ embeds: [cumt2] });
+            //msg.reply("SUCCESS: your name is: " + msg.author.username);
+          }
+          // CMD 3
+          if (command == "members" || command == "servermembers") {
+            const members = msg.guild.members
+              .filter((m) => m.name !== "null")
+              .sort(function (a, b) {
+                return a.position - b.position;
+              })
+              .array()
+              .map((m) => {
+                const member = { name: m.name };
+                return member;
+              });
+            let cumt3 = new EmbedBuilder()
+              .setColor("#21FF00")
+              .setTitle("Server Members")
+              .setImage(msg.guild.iconURL())
+              .setDescription(
+                `This command **might** crash the game. \n ${msg.guild}'s members`
+              )
+              .addFields(
+                {
+                  name: "Members Count:",
+                  value: `( ${msg.guild.memberCount} )`,
+                },
+                { name: "Members List:", value: `${members}` }
+              )
+              .setFooter({
+                text: `Requested by ${msg.author.username}.`,
+                iconURL: msg.author.displayAvatarURL(),
+              })
+              .setTimestamp();
+            msg.reply({ embeds: [cumt3] });
+          }
+          if (command == "sysok") {
+            if ((sysoke = true)) {
+              msg.reply("System status: ok");
+            } else {
+              msg.reply("System status: not ok");
+            }
+          }
+
+          if (command.startsWith("edit ")) {
+            let co = command.split("edit ").pop();
+            let sv = co;
+            msg.channel.send(`Edit! | ` + co).then((msg) => {
+              for (let i = 0; i < co; co--) {
+                msg.edit(`Edit! | ` + co);
+              }
+              msg.edit(`Edited this message ` + sv + `'s times!`);
+            });
+          }
+          // CMD 6
+          if (command == "ping") {
+            const cumping = new EmbedBuilder()
+              .setColor("Aqua")
+              .setTitle("Ping")
+              .setFooter({
+                text: `Requested by ${msg.author.username}.`,
+                iconURL: msg.author.displayAvatarURL(),
+              });
+            msg.channel.send({ embeds: [cumping] }).then((msg) => {
+              //msg.edit(`Latency: ${Date.now() - msg.createdTimestamp}ms!`);
+              const cumping = new EmbedBuilder()
+                .setColor("Aqua")
+                .setTitle("Pong")
+                .setDescription(
+                  `Server speed: \`${(100 + fps - 50).toFixed(2)}%\``
+                )
+                //.setDescription(`Lantecy: ${Date.now() - msg.createdTimestamp} ms!`)
+                .setFooter({
+                  text: `Requested by ${msg.author.username}.`,
+                  iconURL: msg.author.displayAvatarURL(),
+                });
+              msg.edit({ embeds: [cumping] });
+            });
+          }
+          // CMD 8
+          if (command == "reducelag") {
+            const cumlag = new EmbedBuilder()
+              .setColor("Aqua")
+              .setTitle("Optimising game...")
+              .setDescription(`Current state: preparation...`)
+              .setFooter({
+                text: `Requested by ${msg.author.username}.`,
+                iconURL: msg.author.displayAvatarURL(),
+              });
+            msg.reply({ embeds: [cumlag] }).then((msg) => {
+              let op1 = c.BOTS;
+              let op3 = cli.length;
+              console.log("OPTIMIZERS: " + op1 + " " + " " + op3 + " !");
+              const cumlag3 = new EmbedBuilder()
+                .setColor("Aqua")
+                .setTitle("Optimising game...")
+                .setDescription(`Broadcasted warning to all players!`)
+                .setFooter({
+                  text: `Requested by ${msg.author.username}.`,
+                  iconURL: msg.author.displayAvatarURL(),
+                });
+              msg.edit({ embeds: [cumlag3] });
+              const cumlag2 = new EmbedBuilder()
+                .setColor("Aqua")
+                .setTitle("Optimising game...")
+                .setDescription(
+                  `Current state: optimisation...\n [${op1} ${op3}]`
+                )
+                .setFooter({
+                  text: `Requested by ${msg.author.username}.`,
+                  iconURL: msg.author.displayAvatarURL(),
+                });
+              msg.edit({ embeds: [cumlag2] });
+              for (let e of entities) {
+                if (e.type == "BOOOOT" || e.type == "food") {
+                  e.destroy();
+                }
+              }
+              const cumlag4 = new EmbedBuilder()
+                .setColor("Aqua")
+                .setTitle("Successfully optimised game!")
+                .setDescription(`Details: Killed all bots and food.`)
+                .setFooter({
+                  text: `Requested by ${msg.author.username}.`,
+                  iconURL: msg.author.displayAvatarURL(),
+                });
+              msg.edit({ embeds: [cumlag4] });
+            });
+          }
+          // CMD 9
+          if (command == "help") {
+            let helpEmbed = new EmbedBuilder()
+              .setTitle("RUN subcommands tree")
+              .setColor("#08EE33")
+              .addFields(
+                { name: "> **Basics**", value: "↓↓↓↓↓↓↓↓↓" },
+                { name: " **help**", value: "Sends this message" },
+                { name: " **ping**:", value: "Game latency" },
+                {
+                  name: " **sysok**:",
+                  value:
+                    "Sends if system is ok or not, if its not ok means mockups are loading",
+                },
+                { name: "> **Usefull**", value: "↓↓↓↓↓↓↓↓↓" },
+                {
+                  name: " **botscount <count>**",
+                  value: "Kill all bots and set limit to count",
+                },
+                { name: "> **Garbage/less usefull**", value: "↓↓↓↓↓↓↓↓↓" },
+                { name: " **reducelag**", value: "Kills everything" },
+                {
+                  name: " **edit <number>**:",
+                  value: "Send a message to be edit repeated number times",
+                },
+                {
+                  name: " **me/my/myself.name/.user/.username**",
+                  value: "Gives your name",
+                },
+                {
+                  name: " **test<str/num> and/or <str/num>**:",
+                  value: "Bot will know if u sent a test command",
+                }
+              )
+              .setFooter({
+                text: `Requested by ${msg.author.username}.`,
+                iconURL: msg.author.displayAvatarURL(),
+              })
+              .setTimestamp();
+            msg.reply({ embeds: [helpEmbed] });
+          }
+          // CMD 10
+          if (command.startsWith("botscount ")) {
+            let botcount = command.split("botscount ").pop;
+            bots5 = botcount;
+            for (let e of entities) {
+              e.destroy();
+            }
+            const cumbot = new EmbedBuilder()
+              .setColor("Aqua")
+              .setTitle("Success")
+              .setDescription(`Set bot count to ${botcount}`)
+              .setFooter({
+                text: `Requested by ${msg.author.username}.`,
+                iconURL: msg.author.displayAvatarURL(),
+              });
+            msg.reply({ embeds: [cumbot] });
+          }
+        } else {
+          console.log(
+            "Unauthorized user",
+            msg.author.username,
+            "tried to use the run command."
+          );
+          const cumerr = new EmbedBuilder()
+            .setColor("Red")
+            .setTitle("Error!")
+            .setDescription(
+              "You do not have the required permissions to use this command!"
+            )
+            .setFooter({
+              text: `Error message / Requested by ${msg.author.username}.`,
+              iconURL: msg.author.displayAvatarURL(),
+            });
+          msg.reply({ embeds: [cumerr] });
+        }
+      }
+
+      if (msg.content.startsWith(prefix + "kick ")) {
+        const args = msg.content.slice(5).split(" ");
+        console.log(args);
+        const command = args.shift().toLowerCase();
+        console.log(msg.content, command);
+
+        const user = msg.mentions.users.first();
+        if (user) {
+          const member = msg.guild.members.resolve(user);
+          if (member) {
+            if (!msg.member.permissions.has("KICK_MEMBERS")) {
+              const embed = new EmbedBuilder();
+              embed.setTitle("You don't have the `kick_members` permission!");
+              embed
+                .setColor("#FF0000")
+                .setFooter({
+                  text: `Requested by ${msg.author.username}(${msg.author.tag}).`,
+                  iconURL: msg.author.displayAvatarURL(),
+                })
+                .setTimestamp();
+              return msg.channel.send({ embeds: [embed] });
+            }
+            member
+              .kick({
+                reason: `Kicked by ${msg.author.username} using ${client.user.username}.`,
+              })
+              .then(() => {
+                const embed = new EmbedBuilder()
+                  .setColor("#3BFF00")
+                  .setTitle(`**Successfully kicked ${user.tag}.**`)
+                  .setFooter({
+                    text: `Command requested by ${msg.author.username}.`,
+                    iconURL: msg.author.displayAvatarURL(),
+                  })
+                  .setTimestamp();
+                msg.reply({ embeds: [embed] });
+              })
+              .catch((err) => {
+                const embed = new EmbedBuilder()
+                  .setColor("#FF0000")
+                  .setTitle(`**I can\'t kick this member!**`)
+                  .setFooter({
+                    text: `Command requested by ${msg.author.username}.`,
+                    iconURL: msg.author.displayAvatarURL(),
+                  })
+                  .setTimestamp();
+
+                msg.reply({ embeds: [embed] });
+                console.error(err);
+              });
+          } else {
             const embed = new EmbedBuilder()
               .setColor("#FF0000")
-              .setTitle(`**I can\'t kick this member!**`)
+              .setTitle(
+                `**There is no user with this username in this server!**`
+              )
               .setFooter({
                 text: `Command requested by ${msg.author.username}.`,
                 iconURL: msg.author.displayAvatarURL(),
@@ -10731,149 +10812,96 @@ function terminate() {
               .setTimestamp();
 
             msg.reply({ embeds: [embed] });
-            console.error(err);
-          });
-      } else {
-        const embed = new EmbedBuilder()
-          .setColor("#FF0000")
-          .setTitle(`**There is no user with this username in this server!**`)
+          }
+        } else {
+          const embed = new EmbedBuilder()
+            .setColor("#FF0000")
+            .setTitle(`**Please mention someone.**`)
+            .setFooter({
+              text: `Command requested by ${msg.author.username}.`,
+              iconURL: msg.author.displayAvatarURL(),
+            })
+            .setTimestamp();
+
+          msg.reply({ embeds: [embed] });
+        }
+      }
+
+      if (msg.content.startsWith(prefix + "whois ")) {
+        let member = msg.mentions.users.first();
+        let errorEmbed = new EmbedBuilder()
+          .setColor("Red")
+          .setTitle("Error")
+          .setDescription("There was an error running this command.")
+          .addFields({
+            name: "Error information",
+            value:
+              "The member provided was invalid or does not exist within this server.",
+          })
+          .setFooter({
+            text: `Command requested by ${msg.author.username}.`,
+            iconURL: msg.author.displayAvatarURL(),
+          })
+          .setTimestamp();
+        if (!member.id) {
+          msg.reply(`An error occured, please provide a valid mention.`);
+          return 0;
+        }
+        let avatar = member.displayAvatarURL({ size: 1024, dynamic: true });
+        const statuses = {
+          online: "Online",
+          dnd: "Dnd",
+          idle: "Idle",
+          offline: "Offline",
+        };
+
+        let itstatus = statuses;
+
+        const exampleEmbed = new EmbedBuilder()
+          .setTitle(member.username + "'s Profile")
+          .setColor("#2f3136")
+          .setThumbnail(avatar)
+          .addFields(
+            { name: "User Tag", value: `${member.tag}` },
+            { name: "ID", value: `${member.id}` },
+            {
+              name: "Roles Count",
+              value: ` ${
+                msg.guild.members.cache.get(member.id).roles.cache.size ||
+                "No Roles!"
+              }`,
+            },
+            { name: "Avatar url", value: `[Link](${avatar})` } //should work idk why it doesnt
+          ) // skill issue
           .setFooter({
             text: `Command requested by ${msg.author.username}.`,
             iconURL: msg.author.displayAvatarURL(),
           })
           .setTimestamp();
 
-        msg.reply({ embeds: [embed] });
+        msg.reply({ embeds: [exampleEmbed] });
+        return;
       }
-    } else {
-      const embed = new EmbedBuilder()
-        .setColor("#FF0000")
-        .setTitle(`**Please mention someone.**`)
-        .setFooter({
-          text: `Command requested by ${msg.author.username}.`,
-          iconURL: msg.author.displayAvatarURL(),
-        })
-        .setTimestamp();
 
-      msg.reply({ embeds: [embed] });
-    }
-  }
-
-  if (msg.content.startsWith(prefix + "whois ")) {
-    let member = msg.mentions.users.first();
-    let errorEmbed = new EmbedBuilder()
-      .setColor("Red")
-      .setTitle("Error")
-      .setDescription("There was an error running this command.")
-      .addFields({
-        name: "Error information",
-        value:
-          "The member provided was invalid or does not exist within this server.",
-      })
-      .setFooter({
-        text: `Command requested by ${msg.author.username}.`,
-        iconURL: msg.author.displayAvatarURL(),
-      })
-      .setTimestamp();
-    if (!member.id) {
-      msg.reply(`An error occured, please provide a valid mention.`);
-      return 0;
-    }
-    let avatar = member.displayAvatarURL({ size: 1024, dynamic: true });
-    const statuses = {
-      online: "Online",
-      dnd: "Dnd",
-      idle: "Idle",
-      offline: "Offline",
-    };
-
-    let itstatus = statuses;
-
-    const exampleEmbed = new EmbedBuilder()
-      .setTitle(member.username + "'s Profile")
-      .setColor("#2f3136")
-      .setThumbnail(avatar)
-      .addFields(
-        { name: "User Tag", value: `${member.tag}` },
-        { name: "ID", value: `${member.id}` },
-        {
-          name: "Roles Count",
-          value: ` ${
-            msg.guild.members.cache.get(member.id).roles.cache.size ||
-            "No Roles!"
-          }`,
-        },
-        { name: "Avatar url", value: `[Link](${avatar})` } //should work idk why it doesnt
-      ) // skill issue
-      .setFooter({
-        text: `Command requested by ${msg.author.username}.`,
-        iconURL: msg.author.displayAvatarURL(),
-      })
-      .setTimestamp();
-
-    msg.reply({ embeds: [exampleEmbed] });
-    return;
-  }
-
-  if (msg.content == prefix + "killall") {
-    if (
-      msg.author.id == owner_id ||
-      msg.author.id === owner_attacker ||
-      msg.author.id === owner_c ||
-      msg.author.id === felix || user_admin == true
-    ) {
-      let e_count = 0;
-      for (let e of entities) {
-        e.destroy();
-        e_count++;
-      }
-      // bot.createMessage(msg.channel.id, 'Entities killed successfully');
-      let succesEmbed = new EmbedBuilder()
-        .setColor("Aqua")
-        .setTitle("Success!")
-        .setDescription(
-          `Killed all entities successfully! \n Entity count: ${e_count}`
-        )
-        .setFooter({
-          text: `Requested by ${msg.author.username}.`,
-          iconURL: msg.author.displayAvatarURL(),
-        })
-        .setTimestamp();
-      msg.reply({ embeds: [succesEmbed] });
-    } else {
-      //   bot.createMessage(msg.channel.id, unauth(5));
-    }
-  }
-  if (msg.content == prefix + "link") {
-    let succesEmbed = new EmbedBuilder()
-      .setColor("Green")
-      .setTitle("Game link")
-      .setDescription(`**Main:** https://tankmate.ml\n**Proxy:** https://tankmate.glitch.me`)
-      .setFooter({
-        text: `Requested by ${msg.author.username}.`,
-        iconURL: msg.author.displayAvatarURL(),
-      })
-      .setTimestamp();
-    msg.reply({ embeds: [succesEmbed] });
-  }
-  if (msg.content.startsWith(prefix + "gkick ")) {
-    if (
-      msg.author.id == owner_id ||
-      msg.author.id === owner_attacker ||
-      msg.author.id === owner_c ||
-      msg.author.id === felix || user_admin == true
-    ) {
-      var lookfor = msg.content.split(prefix + "gkick ").pop();
-      let clients = sockets.getClients();
-      for (let client of clients) {
-        if (client.player.viewId == lookfor) {
-          client.kick(`You have been kicked by ${msg.author.username}`);
-
+      if (msg.content == prefix + "killall") {
+        if (
+          msg.author.id == owner_id ||
+          msg.author.id === owner_attacker ||
+          msg.author.id === owner_c ||
+          msg.author.id === felix ||
+          user_admin == true
+        ) {
+          let e_count = 0;
+          for (let e of entities) {
+            e.destroy();
+            e_count++;
+          }
+          // bot.createMessage(msg.channel.id, 'Entities killed successfully');
           let succesEmbed = new EmbedBuilder()
             .setColor("Aqua")
             .setTitle("Success!")
             .setDescription(
-              `Successfully kicked **${client.player.name}**. Id: ${lookfor}`
+              `Killed all entities successfully! \n Entity count: ${e_count}`
             )
             .setFooter({
               text: `Requested by ${msg.author.username}.`,
@@ -10881,423 +10909,479 @@ function terminate() {
             })
             .setTimestamp();
           msg.reply({ embeds: [succesEmbed] });
-          sockets.broadcast(
-            `${msg.author.username} has kicked ${client.player.name}.`
-          );
-        }
-      }
-    } else {
-      const cumerr = new EmbedBuilder()
-        .setColor("Red")
-        .setTitle("Error!")
-        .setDescription(
-          "You do not have the required permissions to use this command!"
-        )
-        .setFooter({
-          text: `Error message / Requested by ${msg.author.username}.`,
-          iconURL: msg.author.displayAvatarURL(),
-        });
-      msg.reply({ embeds: [cumerr] });
-    }
-  }
-  if (msg.content.startsWith(prefix + "ban ")) {
-    if (
-      msg.author.id == owner_id ||
-      msg.author.id === owner_attacker ||
-      msg.author.id === owner_c ||
-      msg.author.id === felix || user_admin == true
-    ) {
-      var lookfor = msg.content.split(prefix + "ban ").pop();
-      let clients = sockets.getClients();
-      for (let client of clients) {
-        if (client.player.viewId == lookfor) {
-          bannedIPs.push(client.ip);
-          let succesEmbed = new EmbedBuilder()
-            .setColor("Aqua")
-            .setTitle("Success!")
-            .setDescription(
-              `Successfully banned **${client.player.name}**. Id: ${lookfor}`
-            )
-            .setFooter({
-              text: `Requested by ${msg.author.username}.`,
-              iconURL: msg.author.displayAvatarURL(),
-            })
-            .setTimestamp();
-          msg.reply({ embeds: [succesEmbed] });
-          client.ban(`You have been banned by ${msg.author.username}`);
-          sockets.broadcast(
-            `${msg.author.username} has banned ${client.player.name}.`
-          );
-        }
-      }
-    } else {
-      const cumerr = new EmbedBuilder()
-        .setColor("Red")
-        .setTitle("Error!")
-        .setDescription(
-          "You do not have the required permissions to use this command!"
-        )
-        .setFooter({
-          text: `Error message / Requested by ${msg.author.username}.`,
-          iconURL: msg.author.displayAvatarURL(),
-        });
-      msg.reply({ embeds: [cumerr] });
-    }
-  }
-
-  if (msg.content.startsWith(prefix + "bc ")) {
-    if (
-      msg.author.id == owner_id ||
-      msg.author.id === owner_attacker ||
-      msg.author.id === owner_c ||
-      msg.author.id === felix || user_admin == true
-    ) {
-      let sendError = true;
-      let lookfor = msg.content.split(prefix + "bc ").pop();
-      sockets.broadcast("" + lookfor);
-      let bcEmbed = new EmbedBuilder()
-        .setColor("Aqua")
-        .setTitle(`Successfully broadcasted message.`)
-        .setDescription(`Message content: **${lookfor}**`)
-        .setFooter({
-          text: `Requested by ${msg.author.username}.`,
-          iconURL: msg.author.displayAvatarURL(),
-        })
-        .setTimestamp();
-      msg.reply({ embeds: [bcEmbed] });
-      console.log("Broadcast successful!");
-    } else {
-      const cumerr = new EmbedBuilder()
-        .setColor("Red")
-        .setTitle("Error!")
-        .setDescription(
-          "You do not have the required permissions to use this command!"
-        )
-        .setFooter({
-          text: `Error message / Requested by ${msg.author.username}.`,
-          iconURL: msg.author.displayAvatarURL(),
-        });
-      msg.reply({ embeds: [cumerr] });
-    }
-  }
-  function SHA256(s) {
-    var chrsz = 8;
-    var hexcase = 0;
-    function safe_add(x, y) {
-      var lsw = (x & 0xffff) + (y & 0xffff);
-      var msw = (x >> 16) + (y >> 16) + (lsw >> 16);
-      return (msw << 16) | (lsw & 0xffff);
-    }
-    function S(X, n) {
-      return (X >>> n) | (X << (32 - n));
-    }
-    function R(X, n) {
-      return X >>> n;
-    }
-    function Ch(x, y, z) {
-      return (x & y) ^ (~x & z);
-    }
-    function Maj(x, y, z) {
-      return (x & y) ^ (x & z) ^ (y & z);
-    }
-    function Sigma0256(x) {
-      return S(x, 2) ^ S(x, 13) ^ S(x, 22);
-    }
-    function Sigma1256(x) {
-      return S(x, 6) ^ S(x, 11) ^ S(x, 25);
-    }
-    function Gamma0256(x) {
-      return S(x, 7) ^ S(x, 18) ^ R(x, 3);
-    }
-    function Gamma1256(x) {
-      return S(x, 17) ^ S(x, 19) ^ R(x, 10);
-    }
-    function core_sha256(m, l) {
-      var K = new Array(
-        0x428a2f98,
-        0x71374491,
-        0xb5c0fbcf,
-        0xe9b5dba5,
-        0x3956c25b,
-        0x59f111f1,
-        0x923f82a4,
-        0xab1c5ed5,
-        0xd807aa98,
-        0x12835b01,
-        0x243185be,
-        0x550c7dc3,
-        0x72be5d74,
-        0x80deb1fe,
-        0x9bdc06a7,
-        0xc19bf174,
-        0xe49b69c1,
-        0xefbe4786,
-        0xfc19dc6,
-        0x240ca1cc,
-        0x2de92c6f,
-        0x4a7484aa,
-        0x5cb0a9dc,
-        0x76f988da,
-        0x983e5152,
-        0xa831c66d,
-        0xb00327c8,
-        0xbf597fc7,
-        0xc6e00bf3,
-        0xd5a79147,
-        0x6ca6351,
-        0x14292967,
-        0x27b70a85,
-        0x2e1b2138,
-        0x4d2c6dfc,
-        0x53380d13,
-        0x650a7354,
-        0x766a0abb,
-        0x81c2c92e,
-        0x92722c85,
-        0xa2bfe8a1,
-        0xa81a664b,
-        0xc24b8b70,
-        0xc76c51a3,
-        0xd192e819,
-        0xd6990624,
-        0xf40e3585,
-        0x106aa070,
-        0x19a4c116,
-        0x1e376c08,
-        0x2748774c,
-        0x34b0bcb5,
-        0x391c0cb3,
-        0x4ed8aa4a,
-        0x5b9cca4f,
-        0x682e6ff3,
-        0x748f82ee,
-        0x78a5636f,
-        0x84c87814,
-        0x8cc70208,
-        0x90befffa,
-        0xa4506ceb,
-        0xbef9a3f7,
-        0xc67178f2
-      );
-      var HASH = new Array(
-        0x6a09e667,
-        0xbb67ae85,
-        0x3c6ef372,
-        0xa54ff53a,
-        0x510e527f,
-        0x9b05688c,
-        0x1f83d9ab,
-        0x5be0cd19
-      );
-      var W = new Array(64);
-      var a, b, c, d, e, f, g, h, i, j;
-      var T1, T2;
-      m[l >> 5] |= 0x80 << (24 - (l % 32));
-      m[(((l + 64) >> 9) << 4) + 15] = l;
-      for (var i = 0; i < m.length; i += 16) {
-        a = HASH[0];
-        b = HASH[1];
-        c = HASH[2];
-        d = HASH[3];
-        e = HASH[4];
-        f = HASH[5];
-        g = HASH[6];
-        h = HASH[7];
-        for (var j = 0; j < 64; j++) {
-          if (j < 16) W[j] = m[j + i];
-          else
-            W[j] = safe_add(
-              safe_add(
-                safe_add(Gamma1256(W[j - 2]), W[j - 7]),
-                Gamma0256(W[j - 15])
-              ),
-              W[j - 16]
-            );
-          T1 = safe_add(
-            safe_add(safe_add(safe_add(h, Sigma1256(e)), Ch(e, f, g)), K[j]),
-            W[j]
-          );
-          T2 = safe_add(Sigma0256(a), Maj(a, b, c));
-          h = g;
-          g = f;
-          f = e;
-          e = safe_add(d, T1);
-          d = c;
-          c = b;
-          b = a;
-          a = safe_add(T1, T2);
-        }
-        HASH[0] = safe_add(a, HASH[0]);
-        HASH[1] = safe_add(b, HASH[1]);
-        HASH[2] = safe_add(c, HASH[2]);
-        HASH[3] = safe_add(d, HASH[3]);
-        HASH[4] = safe_add(e, HASH[4]);
-        HASH[5] = safe_add(f, HASH[5]);
-        HASH[6] = safe_add(g, HASH[6]);
-        HASH[7] = safe_add(h, HASH[7]);
-      }
-      return HASH;
-    }
-    function str2binb(str) {
-      var bin = Array();
-      var mask = (1 << chrsz) - 1;
-      for (var i = 0; i < str.length * chrsz; i += chrsz) {
-        bin[i >> 5] |= (str.charCodeAt(i / chrsz) & mask) << (24 - (i % 32));
-      }
-      return bin;
-    }
-    function Utf8Encode(string) {
-      string = string.replace(/\r\n/g, "\n");
-      var utftext = "";
-      for (var n = 0; n < string.length; n++) {
-        var c = string.charCodeAt(n);
-        if (c < 128) {
-          utftext += String.fromCharCode(c);
-        } else if (c > 127 && c < 2048) {
-          utftext += String.fromCharCode((c >> 6) | 192);
-          utftext += String.fromCharCode((c & 63) | 128);
         } else {
-          utftext += String.fromCharCode((c >> 12) | 224);
-          utftext += String.fromCharCode(((c >> 6) & 63) | 128);
-          utftext += String.fromCharCode((c & 63) | 128);
+          //   bot.createMessage(msg.channel.id, unauth(5));
         }
       }
-      return utftext;
-    }
-    function binb2hex(binarray) {
-      var hex_tab = hexcase ? "0123456789ABCDEF" : "0123456789abcdef";
-      var str = "";
-      for (var i = 0; i < binarray.length * 4; i++) {
-        str +=
-          hex_tab.charAt((binarray[i >> 2] >> ((3 - (i % 4)) * 8 + 4)) & 0xf) +
-          hex_tab.charAt((binarray[i >> 2] >> ((3 - (i % 4)) * 8)) & 0xf);
+      if (msg.content == prefix + "link") {
+        let succesEmbed = new EmbedBuilder()
+          .setColor("Green")
+          .setTitle("Game link")
+          .setDescription(
+            `**Main:** https://tankmate.ml\n**Proxy:** https://tankmate.glitch.me`
+          )
+          .setFooter({
+            text: `Requested by ${msg.author.username}.`,
+            iconURL: msg.author.displayAvatarURL(),
+          })
+          .setTimestamp();
+        msg.reply({ embeds: [succesEmbed] });
       }
-      return str;
-    }
-    s = Utf8Encode(s);
-    return binb2hex(core_sha256(str2binb(s), s.length * chrsz));
-  }
+      if (msg.content.startsWith(prefix + "gkick ")) {
+        if (
+          msg.author.id == owner_id ||
+          msg.author.id === owner_attacker ||
+          msg.author.id === owner_c ||
+          msg.author.id === felix ||
+          user_admin == true
+        ) {
+          var lookfor = msg.content.split(prefix + "gkick ").pop();
+          let clients = sockets.getClients();
+          for (let client of clients) {
+            if (client.player.viewId == lookfor) {
+              client.kick(`You have been kicked by ${msg.author.username}`);
 
-  if (msg.content == prefix + "shutdown") {
-    if (
-      msg.author.id == owner_id ||
-      msg.author.id === owner_attacker ||
-      msg.author.id === owner_c ||
-      msg.author.id === felix || user_admin == true
-    ) {
-      sockets.broadcast(
-        "[Warning]: The arena will be closing soon!",
-        errorMessageColor
-      );
-      setInterval(() => {
-        for (let e of entities) {
-          e.isProtected = false;
-          e.invuln = false;
+              let succesEmbed = new EmbedBuilder()
+                .setColor("Aqua")
+                .setTitle("Success!")
+                .setDescription(
+                  `Successfully kicked **${client.player.name}**. Id: ${lookfor}`
+                )
+                .setFooter({
+                  text: `Requested by ${msg.author.username}.`,
+                  iconURL: msg.author.displayAvatarURL(),
+                })
+                .setTimestamp();
+              msg.reply({ embeds: [succesEmbed] });
+              sockets.broadcast(
+                `${msg.author.username} has kicked ${client.player.name}.`
+              );
+            }
+          }
+        } else {
+          const cumerr = new EmbedBuilder()
+            .setColor("Red")
+            .setTitle("Error!")
+            .setDescription(
+              "You do not have the required permissions to use this command!"
+            )
+            .setFooter({
+              text: `Error message / Requested by ${msg.author.username}.`,
+              iconURL: msg.author.displayAvatarURL(),
+            });
+          msg.reply({ embeds: [cumerr] });
         }
-      }, 5);
-      let count = 10;
-      let i;
-      for (i = 1; i < count + 1; i++) {
-        let o = new Entity(room.random());
-        o.color = 3;
-        o.define(Class.arenaCloser);
-        o.define({ CAN_BE_ON_LEADERBOARD: false });
-        o.name = "Arena Closer";
-        o.refreshBodyAttributes();
-        o.color = 3;
-        o.team = -100;
       }
-      setTimeout(function () {}, 60000 * 20);
-      let shutDownEmbed = new EmbedBuilder()
-        .setColor("Red")
-        .setTitle("Shutting down!")
-        .setFooter({
-          text: `Requested by ${msg.author.username}.`,
-          iconURL: msg.author.displayAvatarURL(),
-        })
-        .setTimestamp();
-      let shutDownEmbedPhase2 = new EmbedBuilder()
-        .setColor("#FF0000")
-        .setTitle("Successfuly shut down")
-        .setDescription(
-          `Tankmate.io has been shut down by **${msg.author.username}**`
-        )
-        .setFooter({
-          text: `Requested by ${msg.author.username}.`,
-          iconURL: msg.author.displayAvatarURL(),
-        })
-        .setTimestamp();
-      msg.reply({ embeds: [shutDownEmbed] });
-      setTimeout(() => {
-        sockets.broadcast(
-          "Disconnecting soon, save a screenshot NOW if you want your score to be legit.",
-          errorMessageColor
-        );
-      }, 1000 * 3.5);
-      console.log("[SPAWN]: Spawned 10 arena closers!");
-      console.log("[SYSTEM]: INITIALIZING APP SHUTDOWN...");
-      console.log("[SYSTEM]: Please wait for some moment..."); // ok no shit new error pop up
-      setTimeout(() => {
-        console.log("[SYSTEM]: Tankmate has shut down!"),
-          msg.channel.send({ embeds: [shutDownEmbedPhase2] });
-      }, 1000 * 9);
-      setTimeout(() => {
-        process.exit(1);
-      }, 1000 * 10);
-    }
-  }
+      if (msg.content.startsWith(prefix + "ban ")) {
+        if (
+          msg.author.id == owner_id ||
+          msg.author.id === owner_attacker ||
+          msg.author.id === owner_c ||
+          msg.author.id === felix ||
+          user_admin == true
+        ) {
+          var lookfor = msg.content.split(prefix + "ban ").pop();
+          let clients = sockets.getClients();
+          for (let client of clients) {
+            if (client.player.viewId == lookfor) {
+              bannedIPs.push(client.ip);
+              let succesEmbed = new EmbedBuilder()
+                .setColor("Aqua")
+                .setTitle("Success!")
+                .setDescription(
+                  `Successfully banned **${client.player.name}**. Id: ${lookfor}`
+                )
+                .setFooter({
+                  text: `Requested by ${msg.author.username}.`,
+                  iconURL: msg.author.displayAvatarURL(),
+                })
+                .setTimestamp();
+              msg.reply({ embeds: [succesEmbed] });
+              client.ban(`You have been banned by ${msg.author.username}`);
+              sockets.broadcast(
+                `${msg.author.username} has banned ${client.player.name}.`
+              );
+            }
+          }
+        } else {
+          const cumerr = new EmbedBuilder()
+            .setColor("Red")
+            .setTitle("Error!")
+            .setDescription(
+              "You do not have the required permissions to use this command!"
+            )
+            .setFooter({
+              text: `Error message / Requested by ${msg.author.username}.`,
+              iconURL: msg.author.displayAvatarURL(),
+            });
+          msg.reply({ embeds: [cumerr] });
+        }
+      }
 
-  if (msg.content.startsWith(prefix + "say ")) {
-    if (
-      msg.author.id === owner_id ||
-      msg.author.id === owner_attacker ||
-      msg.author.id === owner_c ||
-      msg.author.id === felix || user_admin == true
-    ) {
-      var input = msg.content.split(prefix + "say ").pop();
-      const cumerr = new EmbedBuilder()
-        .setColor("Aqua")
-        .setTitle("Success!")
-        .setDescription(`${input}`)
-        .setFooter({
-          text: `Requested by ${msg.author.username}.`,
-          iconURL: msg.author.displayAvatarURL(),
-        });
-      msg.reply({ embeds: [cumerr] });
-      //   setTimeout(()=>{msg.delete();},1000);// delete the command trigger message lol
-    }
-  }
-  } else {
+      if (msg.content.startsWith(prefix + "bc ")) {
+        if (
+          msg.author.id == owner_id ||
+          msg.author.id === owner_attacker ||
+          msg.author.id === owner_c ||
+          msg.author.id === felix ||
+          user_admin == true
+        ) {
+          let sendError = true;
+          let lookfor = msg.content.split(prefix + "bc ").pop();
+          sockets.broadcast("" + lookfor);
+          let bcEmbed = new EmbedBuilder()
+            .setColor("Aqua")
+            .setTitle(`Successfully broadcasted message.`)
+            .setDescription(`Message content: **${lookfor}**`)
+            .setFooter({
+              text: `Requested by ${msg.author.username}.`,
+              iconURL: msg.author.displayAvatarURL(),
+            })
+            .setTimestamp();
+          msg.reply({ embeds: [bcEmbed] });
+          console.log("Broadcast successful!");
+        } else {
+          const cumerr = new EmbedBuilder()
+            .setColor("Red")
+            .setTitle("Error!")
+            .setDescription(
+              "You do not have the required permissions to use this command!"
+            )
+            .setFooter({
+              text: `Error message / Requested by ${msg.author.username}.`,
+              iconURL: msg.author.displayAvatarURL(),
+            });
+          msg.reply({ embeds: [cumerr] });
+        }
+      }
+      function SHA256(s) {
+        var chrsz = 8;
+        var hexcase = 0;
+        function safe_add(x, y) {
+          var lsw = (x & 0xffff) + (y & 0xffff);
+          var msw = (x >> 16) + (y >> 16) + (lsw >> 16);
+          return (msw << 16) | (lsw & 0xffff);
+        }
+        function S(X, n) {
+          return (X >>> n) | (X << (32 - n));
+        }
+        function R(X, n) {
+          return X >>> n;
+        }
+        function Ch(x, y, z) {
+          return (x & y) ^ (~x & z);
+        }
+        function Maj(x, y, z) {
+          return (x & y) ^ (x & z) ^ (y & z);
+        }
+        function Sigma0256(x) {
+          return S(x, 2) ^ S(x, 13) ^ S(x, 22);
+        }
+        function Sigma1256(x) {
+          return S(x, 6) ^ S(x, 11) ^ S(x, 25);
+        }
+        function Gamma0256(x) {
+          return S(x, 7) ^ S(x, 18) ^ R(x, 3);
+        }
+        function Gamma1256(x) {
+          return S(x, 17) ^ S(x, 19) ^ R(x, 10);
+        }
+        function core_sha256(m, l) {
+          var K = new Array(
+            0x428a2f98,
+            0x71374491,
+            0xb5c0fbcf,
+            0xe9b5dba5,
+            0x3956c25b,
+            0x59f111f1,
+            0x923f82a4,
+            0xab1c5ed5,
+            0xd807aa98,
+            0x12835b01,
+            0x243185be,
+            0x550c7dc3,
+            0x72be5d74,
+            0x80deb1fe,
+            0x9bdc06a7,
+            0xc19bf174,
+            0xe49b69c1,
+            0xefbe4786,
+            0xfc19dc6,
+            0x240ca1cc,
+            0x2de92c6f,
+            0x4a7484aa,
+            0x5cb0a9dc,
+            0x76f988da,
+            0x983e5152,
+            0xa831c66d,
+            0xb00327c8,
+            0xbf597fc7,
+            0xc6e00bf3,
+            0xd5a79147,
+            0x6ca6351,
+            0x14292967,
+            0x27b70a85,
+            0x2e1b2138,
+            0x4d2c6dfc,
+            0x53380d13,
+            0x650a7354,
+            0x766a0abb,
+            0x81c2c92e,
+            0x92722c85,
+            0xa2bfe8a1,
+            0xa81a664b,
+            0xc24b8b70,
+            0xc76c51a3,
+            0xd192e819,
+            0xd6990624,
+            0xf40e3585,
+            0x106aa070,
+            0x19a4c116,
+            0x1e376c08,
+            0x2748774c,
+            0x34b0bcb5,
+            0x391c0cb3,
+            0x4ed8aa4a,
+            0x5b9cca4f,
+            0x682e6ff3,
+            0x748f82ee,
+            0x78a5636f,
+            0x84c87814,
+            0x8cc70208,
+            0x90befffa,
+            0xa4506ceb,
+            0xbef9a3f7,
+            0xc67178f2
+          );
+          var HASH = new Array(
+            0x6a09e667,
+            0xbb67ae85,
+            0x3c6ef372,
+            0xa54ff53a,
+            0x510e527f,
+            0x9b05688c,
+            0x1f83d9ab,
+            0x5be0cd19
+          );
+          var W = new Array(64);
+          var a, b, c, d, e, f, g, h, i, j;
+          var T1, T2;
+          m[l >> 5] |= 0x80 << (24 - (l % 32));
+          m[(((l + 64) >> 9) << 4) + 15] = l;
+          for (var i = 0; i < m.length; i += 16) {
+            a = HASH[0];
+            b = HASH[1];
+            c = HASH[2];
+            d = HASH[3];
+            e = HASH[4];
+            f = HASH[5];
+            g = HASH[6];
+            h = HASH[7];
+            for (var j = 0; j < 64; j++) {
+              if (j < 16) W[j] = m[j + i];
+              else
+                W[j] = safe_add(
+                  safe_add(
+                    safe_add(Gamma1256(W[j - 2]), W[j - 7]),
+                    Gamma0256(W[j - 15])
+                  ),
+                  W[j - 16]
+                );
+              T1 = safe_add(
+                safe_add(
+                  safe_add(safe_add(h, Sigma1256(e)), Ch(e, f, g)),
+                  K[j]
+                ),
+                W[j]
+              );
+              T2 = safe_add(Sigma0256(a), Maj(a, b, c));
+              h = g;
+              g = f;
+              f = e;
+              e = safe_add(d, T1);
+              d = c;
+              c = b;
+              b = a;
+              a = safe_add(T1, T2);
+            }
+            HASH[0] = safe_add(a, HASH[0]);
+            HASH[1] = safe_add(b, HASH[1]);
+            HASH[2] = safe_add(c, HASH[2]);
+            HASH[3] = safe_add(d, HASH[3]);
+            HASH[4] = safe_add(e, HASH[4]);
+            HASH[5] = safe_add(f, HASH[5]);
+            HASH[6] = safe_add(g, HASH[6]);
+            HASH[7] = safe_add(h, HASH[7]);
+          }
+          return HASH;
+        }
+        function str2binb(str) {
+          var bin = Array();
+          var mask = (1 << chrsz) - 1;
+          for (var i = 0; i < str.length * chrsz; i += chrsz) {
+            bin[i >> 5] |=
+              (str.charCodeAt(i / chrsz) & mask) << (24 - (i % 32));
+          }
+          return bin;
+        }
+        function Utf8Encode(string) {
+          string = string.replace(/\r\n/g, "\n");
+          var utftext = "";
+          for (var n = 0; n < string.length; n++) {
+            var c = string.charCodeAt(n);
+            if (c < 128) {
+              utftext += String.fromCharCode(c);
+            } else if (c > 127 && c < 2048) {
+              utftext += String.fromCharCode((c >> 6) | 192);
+              utftext += String.fromCharCode((c & 63) | 128);
+            } else {
+              utftext += String.fromCharCode((c >> 12) | 224);
+              utftext += String.fromCharCode(((c >> 6) & 63) | 128);
+              utftext += String.fromCharCode((c & 63) | 128);
+            }
+          }
+          return utftext;
+        }
+        function binb2hex(binarray) {
+          var hex_tab = hexcase ? "0123456789ABCDEF" : "0123456789abcdef";
+          var str = "";
+          for (var i = 0; i < binarray.length * 4; i++) {
+            str +=
+              hex_tab.charAt(
+                (binarray[i >> 2] >> ((3 - (i % 4)) * 8 + 4)) & 0xf
+              ) +
+              hex_tab.charAt((binarray[i >> 2] >> ((3 - (i % 4)) * 8)) & 0xf);
+          }
+          return str;
+        }
+        s = Utf8Encode(s);
+        return binb2hex(core_sha256(str2binb(s), s.length * chrsz));
+      }
+
+      if (msg.content == prefix + "shutdown") {
+        if (
+          msg.author.id == owner_id ||
+          msg.author.id === owner_attacker ||
+          msg.author.id === owner_c ||
+          msg.author.id === felix ||
+          user_admin == true
+        ) {
+          sockets.broadcast(
+            "[Warning]: The arena will be closing soon!",
+            errorMessageColor
+          );
+          setInterval(() => {
+            for (let e of entities) {
+              e.isProtected = false;
+              e.invuln = false;
+            }
+          }, 5);
+          let count = 10;
+          let i;
+          for (i = 1; i < count + 1; i++) {
+            let o = new Entity(room.random());
+            o.color = 3;
+            o.define(Class.arenaCloser);
+            o.define({ CAN_BE_ON_LEADERBOARD: false });
+            o.name = "Arena Closer";
+            o.refreshBodyAttributes();
+            o.color = 3;
+            o.team = -100;
+          }
+          setTimeout(function () {}, 60000 * 20);
+          let shutDownEmbed = new EmbedBuilder()
+            .setColor("Red")
+            .setTitle("Shutting down!")
+            .setFooter({
+              text: `Requested by ${msg.author.username}.`,
+              iconURL: msg.author.displayAvatarURL(),
+            })
+            .setTimestamp();
+          let shutDownEmbedPhase2 = new EmbedBuilder()
+            .setColor("#FF0000")
+            .setTitle("Successfuly shut down")
+            .setDescription(
+              `Tankmate.io has been shut down by **${msg.author.username}**`
+            )
+            .setFooter({
+              text: `Requested by ${msg.author.username}.`,
+              iconURL: msg.author.displayAvatarURL(),
+            })
+            .setTimestamp();
+          msg.reply({ embeds: [shutDownEmbed] });
+          setTimeout(() => {
+            sockets.broadcast(
+              "Disconnecting soon, save a screenshot NOW if you want your score to be legit.",
+              errorMessageColor
+            );
+          }, 1000 * 3.5);
+          console.log("[SPAWN]: Spawned 10 arena closers!");
+          console.log("[SYSTEM]: INITIALIZING APP SHUTDOWN...");
+          console.log("[SYSTEM]: Please wait for some moment..."); // ok no shit new error pop up
+          setTimeout(() => {
+            console.log("[SYSTEM]: Tankmate has shut down!"),
+              msg.channel.send({ embeds: [shutDownEmbedPhase2] });
+          }, 1000 * 9);
+          setTimeout(() => {
+            process.exit(1);
+          }, 1000 * 10);
+        }
+      }
+
+      if (msg.content.startsWith(prefix + "say ")) {
+        if (
+          msg.author.id === owner_id ||
+          msg.author.id === owner_attacker ||
+          msg.author.id === owner_c ||
+          msg.author.id === felix ||
+          user_admin == true
+        ) {
+          var input = msg.content.split(prefix + "say ").pop();
+          const cumerr = new EmbedBuilder()
+            .setColor("Aqua")
+            .setTitle("Success!")
+            .setDescription(`${input}`)
+            .setFooter({
+              text: `Requested by ${msg.author.username}.`,
+              iconURL: msg.author.displayAvatarURL(),
+            });
+          msg.reply({ embeds: [cumerr] });
+          //   setTimeout(()=>{msg.delete();},1000);// delete the command trigger message lol
+        }
+      }
+    } else {
       if (msg.content.startsWith(prefix + "sha256 ")) {
-    var imput = msg.content.split(prefix + "sha256 ").pop();
-    let output = sha256(imput).toUpperCase();
-    let hashEmbed = new EmbedBuilder()
-      .setColor("Aqua")
-      .setTitle("Success!")
-      .setDescription(`Your SHA256 hash is generated: **${output}**`)
-      .setFooter({
-        text: `Requested by ${msg.author.username}.`,
-        iconURL: msg.author.displayAvatarURL(),
-      })
-      .setTimestamp();
-    msg.reply({ embeds: [hashEmbed] });
+        var imput = msg.content.split(prefix + "sha256 ").pop();
+        let output = sha256(imput).toUpperCase();
+        let hashEmbed = new EmbedBuilder()
+          .setColor("Aqua")
+          .setTitle("Success!")
+          .setDescription(`Your SHA256 hash is generated: **${output}**`)
+          .setFooter({
+            text: `Requested by ${msg.author.username}.`,
+            iconURL: msg.author.displayAvatarURL(),
+          })
+          .setTimestamp();
+        msg.reply({ embeds: [hashEmbed] });
+      }
+      if (msg.content.startsWith(prefix + "password ")) {
+        var imput = msg.content.split(prefix + "password ").pop();
+        let output = sha256(imput).toUpperCase();
+        let hashEmbed = new EmbedBuilder()
+          .setColor("Aqua")
+          .setTitle("Success!")
+          .setDescription(`Your SHA256 hash is generated: **${output}**`)
+          .setFooter({
+            text: `Requested by ${msg.author.username}.`,
+            iconURL: msg.author.displayAvatarURL(),
+          })
+          .setTimestamp();
+        msg.reply({ embeds: [hashEmbed] });
+      }
+    }
+  } catch (error) {
+    console.error("[ERROR messageCreate bot]:  " + error);
   }
-   if (msg.content.startsWith(prefix + "password ")) {
-    var imput = msg.content.split(prefix + "password ").pop();
-    let output = sha256(imput).toUpperCase();
-    let hashEmbed = new EmbedBuilder()
-      .setColor("Aqua")
-      .setTitle("Success!")
-      .setDescription(`Your SHA256 hash is generated: **${output}**`)
-      .setFooter({
-        text: `Requested by ${msg.author.username}.`,
-        iconURL: msg.author.displayAvatarURL(),
-      })
-      .setTimestamp();
-    msg.reply({ embeds: [hashEmbed] });
-  }
-  }
-  }catch(error){console.error('[ERROR messageCreate bot]:  ' + error)}
 });
 
 var botConnected = true;
