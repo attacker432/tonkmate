@@ -6169,8 +6169,10 @@ if(!request.body.username){
 encrypted_password = sha256(request.body.password).toUpperCase(); // get the password and encrypt it to a sha256 hash which we can use for validation.
 let account_unvalidated = userAccounts[encrypted_password];
 if(request.body.username == account_unvalidated.name){
+console.log('.')
 // native code for sending the request back below
 let account = account_unvalidated; // GG, we got the account.
+console.log(account)
 }
 });
 // Websocket behavior
