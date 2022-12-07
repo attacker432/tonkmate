@@ -2037,7 +2037,7 @@ const socketInit = (() => {
   })();
   // The initialization function (this is returned)
   return port => {
-    let WSLINK = /*"ws://" + "tankmate.glitch.me" ? */"wss://" + "tankmate.glitch.me"
+    let WSLINK = /*"ws://" + "tankmate.glitch.me" ? */"wss://" + "tonkmate.glitch.me" // The url to connect the websocket to.
     //let WSLINK = window.location.hostname.includes("localhost") ? `ws://${window.location.hostname}:3000` : 'wss://' + window.location.hostname;
     let socket = new WebSocket(WSLINK);
     // Set up our socket

@@ -4,7 +4,7 @@
 /*jshint esversion: 6 */
 "use strict";
 // Discord.js general requirements
-const { Client, Collection, GatewayIntentBits } = require("discord.js");
+const { Client, Collection, GatewayIntentBits, Partials } = require("discord.js");
 
 //Note: JSHint is used for detecting bugs.
 
@@ -6271,7 +6271,7 @@ const sockets = (() => {
             .setColor(15548997)
             .setTitle(`${player.name} left the server!`)
             .setTimestamp();
-          let channel = client.channels.cache.get("1031188101621620826");
+          let channel = client.channels.cache.get("1050004667402293258");
           channel.send({ embeds: [embed] });
         } else {
           util.log("[INFO] A player disconnected before entering the game.");
@@ -6476,7 +6476,7 @@ const sockets = (() => {
               // Start the update rhythm immediately
               socket.update(0);
 
-              let channel = client.channels.cache.get("1031188101621620826");
+              let channel = client.channels.cache.get("1050004667402293258");
               let embed = new EmbedBuilder()
                 .setColor(111111) // green when join, red when leave
                 .setTitle(`${m[0]} joined the server!`)
@@ -10084,7 +10084,7 @@ setTimeout(() => {
 
 //const Eris = require("eris");
 const client = new Client({
-  partials: ["MESSAGE", "REACTION"],
+  partials: ["MESSAGE", "REACTION", "GUILDMEMBER", Partials.Channel, Partials.User],
   intents: [
     GatewayIntentBits.Guilds,
     GatewayIntentBits.GuildMessages,
@@ -11156,7 +11156,7 @@ function terminate() {
         text: `Requested by ${msg.author.username}.`,
         iconURL: msg.author.displayAvatarURL(),
       });
-    msg.reply({ embeds: [successEmbed] });
+    msg.channel.send({ embeds: [successEmbed] });
     let hashEmbed = new EmbedBuilder()
       .setColor("Aqua")
       .setTitle("Success!")
