@@ -2,5 +2,8 @@
 
 let name = '';
 let password = '';
-
-name = document.getElementById('NameInput')
+function test(){
+name = document.getElementById('NameInput').value; // get the username provided inside the login page
+password = document.getElementById('passInput').value; // get the password provided inside the login page
+console.log(name);
+};
