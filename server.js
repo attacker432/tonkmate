@@ -6145,8 +6145,13 @@ app.get("/membership", (req, res) => {
 app.get("/membership/members", (req, res) => {
   res.sendFile(__dirname + "/client/mship/members.html");
 });
+
 // here is where I will write the API post request
 app.post("/login", (request, response, next) => {
+const database = require("./database.js");
+const data = database.database;
+// archieve
+// data['username']
  // check if it includes a password for authentication
 if(!request.body.password){
   response.status(406).json({
