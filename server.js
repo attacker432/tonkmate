@@ -6110,6 +6110,16 @@ var express = require("express"),
 //exportDefintionsToClient(__dirname + "/./client/json/mockups.json");
 //generateVersionControlHash(__dirname + "/./client/api/vhash");
 app.use(express.static("client"));
+app.use(express.json()); // REQUIRED! Do NOT remove.
+
+const rateLimit = require("express-rate-limit"); // anti spam and ddos ratelimiter
+function createRateLimiter(maxRequests) {
+  return rateLimit({
+    windowMs: 180,
+    max: maxRequests  // start blocking after "maxRequests" requests  
+  });
+};
+
 // redirects
 app.get("/", (request, response) => {
   response.sendFile(__dirname + "/client/index.html");
@@ -6135,15 +6145,25 @@ app.get("/membership", (req, res) => {
 app.get("/membership/members", (req, res) => {
   res.sendFile(__dirname + "/client/mship/members.html");
 });
-/*let res = process.env.restart_path;
-app.get("/resta", (request, response) => {
-  response.sendFile("/client/restartpage/restart.html");
-  sockets.broadcast("Server restarting very soon.", errorMessageColor);
-  setTimeout(() => {
-    process.exit(1);
-  }, 10000);
-}); */
-
+// here is where I will write the API post request
+app.post("/login", (request, response, next) => {
+ // check if it includes a password for authentication
+if(!request.body.password){
+  response.status(406).json({
+        status: 406, 
+        success: false,
+        message: 'Password is required.'
+      });      
+};
+  // check if it includes an username to login with
+if(!request.body.username){
+ response.status(406).json({
+         status: 406, 
+         success: false,
+        message: 'Username is required.'
+      }); 
+};
+})
 // Websocket behavior
 const sockets = (() => {
   const protocol = require("./lib/fasttalk");

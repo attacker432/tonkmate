@@ -1,2 +1,2 @@
-let register = false;
+let register = true;
 let login = true;
