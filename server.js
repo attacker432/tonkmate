@@ -6189,7 +6189,7 @@ app.post("/login", (request, response, next) => {
     response.status(406).json({
       status: 406,
       success: false,
-      message: "Mismatch, the password provided is invalid.",
+      message: "The combination between password-user is invalid.",
     });
   } else {
   if (request.body.username == account_unvalidated.name) {
@@ -6207,14 +6207,15 @@ app.post("/login", (request, response, next) => {
       action: action,
     };
     response.json(data); // just a test if this works GG
+    
     console.log('Received a valid login request!')
   } else {
-    console.error('Someone tried to login with the wrong password-username combination.')
-      response.status(406).json({
+    let data = {
       status: 406,
       success: false,
       message: "Match between username and password is invalid.",
-    });
+   };
+    response.json(data); // send it back
   }
   }
 });

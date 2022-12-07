@@ -23,10 +23,11 @@ fetch("https://tonkmate.glitch.me/login", { // the main part: the https request 
    headers: {
     'Content-Type': 'application/json'
   }
-  }).then(res => {
-  console.log("Request complete! response:", res);
-}).catch(error => {
-  console.error(error)
 })
+  .then(Result => Result.json())
+        .then(string => {
+   let message = string.message;
+   write(message)
+        });
 };
 // by the way can we merge login + register(.js) together?
