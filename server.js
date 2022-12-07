@@ -10157,6 +10157,7 @@ function parse(input) {
   return out;
 }
 client.on("messageCreate", (msg) => {
+  try{
   let user_admin = msg.member.roles.cache.has(admin_role_id);
  // let user_admin = msg.author.roles.cache.has('role-id-here');
   if (msg.content.startsWith(prefix + "help")) {
@@ -11284,6 +11285,7 @@ function terminate() {
       //   setTimeout(()=>{msg.delete();},1000);// delete the command trigger message lol
     }
   }
+  }catch(error){console.error('[ERROR messageCreate bot]:  ' + error)}
 });
 
 var botConnected = true;
