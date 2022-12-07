@@ -25,6 +25,8 @@ fetch("https://tonkmate.glitch.me/login", { // the main part: the https request 
   }
   }).then(res => {
   console.log("Request complete! response:", res);
-});
+}).catch(error => {
+  console.error(error)
+})
 };
 // by the way can we merge login + register(.js) together?

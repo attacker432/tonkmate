@@ -6206,8 +6206,8 @@ app.post("/login", (request, response, next) => {
       success: success,
       action: action,
     };
-    
-    console.log('Received a request!')
+    response.json(data); // just a test if this works GG
+    console.log('Received a valid login request!')
   } else {
     console.error('Someone tried to login with the wrong password-username combination.')
       response.status(406).json({
