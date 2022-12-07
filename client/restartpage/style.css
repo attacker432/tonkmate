@@ -1,0 +1,16 @@
+html,
+body,
+canvas {
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  background: white;
+ /* background-image: url("https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Ftse1.mm.bing.net%2Fth%3Fid%3DOIP.yQ6LsGblhV_NksW7KNrO6QHaFW%26pid%3DApi&f=1&ipt=17661814c27ff16a3fcae9194ab4e6636b0c48c72f65058bdf6f4e6398cb90f9&ipo=images");
+*/
+}
+
+h1 {
+  font-style: oblique;
+  color: #6A00CF;
+}

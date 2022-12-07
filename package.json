@@ -1,6 +1,6 @@
 {
   "name": "arras",
-  "version": "3.0.1",
+  "version": "3.0.2",
   "main": "server.js",
   "scripts": {
     "start": "node server.js --require"
@@ -17,7 +17,7 @@
     "request": "^2.88.0",
     "eris-embed-builder": "^0.1.2",
     "eris-embed": "^2.1.0",
-    "discord.js": "^14.5.0",
+    "discord.js": "^14.7.0",
     "hastebin-gen": "^2.0.5",
     "proxycheck-node.js": "^2.0.0",
     "axios": "^1.1.3"

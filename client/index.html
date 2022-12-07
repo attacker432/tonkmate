@@ -1,0 +1,228 @@
+<!doctype html>
+<html lang="en" id="mainBody">
+<link href="https://fonts.googleapis.com/css?family=Ubuntu:400,700" rel="stylesheet">
+<script type="text/javascript" src="https://code.jquery.com/jquery-1.7.1.min.js"></script>
+
+
+<style type="text/css">
+  body {
+    overflow: hidden;
+  }
+</style> 
+
+<head>
+  <!-- Meta Properties -->
+  <meta charset="UTF-8">
+  <title>TankMate.io</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no">
+  <meta name="description" content="Tankmate.io - Play with your friends, have fun and chat!" />
+  <meta name="msapplication-TileColor" content="#ffffff" />
+  <!-- CSS -->
+  <link rel="stylesheet" href="/main.css" />
+  <!-- Version Control -->
+  <script>
+    var VERSION = localStorage.getItem('versionHash');
+    (function versionControl() {
+      let request = new XMLHttpRequest();
+      let url = window.location.href + "/api/vhash";
+      console.log("Checking version...");
+      return new Promise((resolve, reject) => {
+        request.open('GET', url);
+        request.onload = () => {
+          resolve(request.response);
+          console.log('Version check successful.');
+        };
+        request.onerror = () => {
+          reject(request.statusText);
+          console.log('Version check failed.');
+          console.log(request.statusText);
+        };
+        request.send();
+      });
+    })().then(function resolveVersion(data) {
+      localStorage.setItem('versionHash', data);
+      if (VERSION !== data) {
+        console.log("Updating!");
+        localStorage.setItem('updated', 'datgudshit');
+        location.reload(true);
+      }
+    });
+  </script>
+  <!-- Favicons -->
+  <link rel="icon" type="image/png" sizes="96x96" href="https://cdn.discordapp.com/attachments/977916242855870525/982554678288089118/download_5.png">
+  <meta name="msapplication-TileColor" content="#ffffff">
+  <meta name="theme-color" content="#ffffff">
+</head>
+  
+  <body oncontextmenu="return false;", id="mainBody" <body>
+  <div id="gameAreaWrapper">
+    <canvas id="gameCanvas" tabindex="1" id="cvs", tabindex="1"></canvas>
+  </div>
+  <div id="mainWrapper">
+    <div id="startMenuWrapper">
+      <div id="startMenu">
+        <div id="discordHolder" class="startMenuHolder">
+          <div class="startMenuHolder" allowtransparency="true">
+          <iframe id="infoNotesIFrame" src="info.html", seamless="seamless" frameBorder="0">Info goes here!</iframe>
+          </div>
+        </div>
+        <div class="startMenuHolder">
+          <div class="sliderHolder">
+            <div class="slider" id="startMenuSlidingContent">
+              <center><img class="icon" alt="icon" src="https://cdn.discordapp.com/attachments/977916242855870525/982554678288089118/download_5.png?size=128" /></center>
+              <h1 class="displayTag">TankMate.io</h1>
+               <div class="version">
+                 <h3 style="position: relative; bottom: 5px;">
+                  (v3.0.0)
+              </h3>
+              </div>
+              <div id="serverName">
+                <h4 class="nopadding">Getting lastest version...</h4>
+              </div>
+              <input type="text" autofocus tabindex="1" spellcheck="false" placeholder="This is the tale of:" id="playerNameInput" maxlength="14" />
+              <input type="text" class="conceal" tabindex="3" placeholder="Token. Leave blank if not beta tester." id="playerKeyInput" maxlength="64" />
+            </div>
+            <div class="slider" id="startMenuSlidingTrigger">
+              <h3 class="nopadding">view options/help 🡲</h3>
+            </div>
+            <div class="slider" id="startMenuuSlidingContent">
+              <br>
+              <optionsheader>Advanced Controls:</optionsheader><br>
+              <table>
+                <tr>
+                  <td><b>E</b>: auto-fire</td>
+                  <td><b>C</b>: auto-spin</td>
+                </tr>
+                <tr>
+                  <td><b>R</b>: disable auto-weapons</td>
+                  <td><b>N</b>: level up (sandbox)</td>
+                </tr>
+                <tr>
+                  <td><b>H</b>: open chat</td>
+                  <td><b>[1-9]</b>: upgrades</td>
+                </tr>
+                <tr>
+                  <td><b>[y,h,u,j,i,k,o]</b>: chose tank</td>
+                </tr>
+              </table>
+              <optionsheader>Options:</optionsheader>
+              <select id="optColors" tabindex="-1">
+                <option value="normal">Light Colors</option>
+                <option value="dark">Dark Colors</option>
+                <option value="natural">Natural</option>
+                <option value="classic">Classic</option>
+                <option value="forest">Forest (By the game)</option>
+                <option value="midnight">Midnight (By the game)</option>
+                <option value="pastel">Snow (By the game)</option>
+                <option value="ocean">Coral Reef (Fan-made)</option>
+                <option value="badlands">Badlands (Fan-made)</option>
+                <option value="bleach">Bleach (Fan-made)</option>
+              </select>
+              <select id="optBorders" tabindex="-1">
+                <option value="normal">Soft Borders</option>
+                <option value="dark">Dark Borders</option>
+                <option value="neon">Neon Mode</option>
+                <option value="glass">Glass Mode</option>
+              </select>
+              <table>
+                <tr>
+                  <td>
+                    <div>
+                      <label><input id="optScreenshotMode" tabindex="-1" class="checkbox" type="checkbox"> Screenshot Mode</label>
+                    </div>
+                  </td>
+                  <td>
+                    <div>
+                      <label><input id="optNoPointy" tabindex="-1" class="checkbox" type="checkbox"> Classic Traps</label>
+                    </div>
+                  </td>
+                </tr>
+                <tr>
+                  <td>
+                    <div>
+                      <label><input id="optFancy" tabindex="-1" class="checkbox" type="checkbox"> Low Graphics</label>
+                    </div>
+                  </td>
+                  <td>
+                    <div>
+                      <label><input id="optPredictive" tabindex="-1" class="checkbox" type="checkbox"> Disable Hyperactivity</label>
+                    </div>
+                  </td>
+                </tr>
+                <tr>
+                </tr>
+              </table>
+            </div>
+          </div>
+          <div style="position: relative; bottom: -10px;">
+            <button id="startButton" tabindex="2">Play now</button>
+            <div class="glitch-embed-wrap" style="height: 420px; width: 100%;">
+</div><script>
+              var clicked2 = true;
+            $("#startButton").on('click', function() {
+              if (clicked2) {
+                clicked2 = false;
+                console.log("Someone just launched the game!")
+                clicked2 = true;
+              }
+            })
+            </script>
+          </div>
+        </div>
+        <div class="startMenuHolder" allowtransparency="true">
+          <iframe id="patchNotesIFrame" src="changelog.html" seamless="seamless" frameborder="0">Patch notes go here!</iframe>
+        </div>
+        <div id="bottomHolder">
+          <h5 class="nopadding" style="margin:0; display:inline">Links: </h5>
+          <form action="https://tankmate.glitch.me/mship/login.html">
+            <input id="pledge" type="submit" value="Membersite">
+          </form>
+           <form action=" https://discord.gg/xzg2SuHEb7">
+            <input id="pledge2" type="submit" value="Discord">
+          </form>
+           <form action="https://tankmate.glitch.me/sha256.html">
+            <input id="pledge3" type="submit" value="SHA256 Gen">
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- JS -->
+  <script src="//code.jquery.com/jquery-2.2.0.min.js"></script>
+  <script src="/app.js"></script>
+  <script>
+    var clicked = true;
+    $("#startMenuSlidingTrigger").on('click', function() {
+      if (clicked) {
+        clicked = false;
+        $(this).html('<h3 class="nopadding">close options/help 🡶</h3>');
+        $(".slider").css({
+          "top": "-265px"
+        })
+      } else {
+        clicked = true;
+        $(this).html('<h3 class="nopadding">view options/help 🡲</h3>');
+        $(".slider").css({
+          "top": 0
+        });
+      }
+    });
+  </script>
+  <script>
+    $(document).ready(function() {
+      // This is because it acts weird in Chrome for whatever reason...
+      $("#twitterHolder").css({
+        "height": "100%"
+      });
+      // This is for updates
+      if (localStorage.getItem('updated') === 'datgudshit') {
+        localStorage.setItem('updated', false);
+        $('#patchNotesIFrame').load(function() {
+          $("#patchNotesIFrame").contents().find('#patchNotes').prepend('<update>New update!</update> ');
+        });
+      }
+    });
+  </script>
+</body>
+
+</html>
