@@ -10097,6 +10097,7 @@ const {
   AttachmentBuilder,
   SlashCommandBuilder,
   TextChannel,
+  ActivityType,
 } = require("discord.js");
 client.login(process.env.bot_token);
 
@@ -10107,9 +10108,9 @@ client.on("ready", () => {
     { type: "LISTENING" }
   );
   client.user.setPresence({
-            status: ,
+            status: "online",
             activities: [{
-                name: config.status.name,
+                name: "Playing tankmate.ml",
                 type: ActivityType.Playing ,
             }]
         })
@@ -10156,6 +10157,8 @@ function parse(input) {
   return out;
 }
 client.on("messageCreate", (msg) => {
+  let user_admin = msg.member.roles.cache.has(admin_role_id);
+ // let user_admin = msg.author.roles.cache.has('role-id-here');
   if (msg.content.startsWith(prefix + "help")) {
     let helpEmbed = new EmbedBuilder()
       .setTitle("**  Command list**")
@@ -10241,7 +10244,7 @@ client.on("messageCreate", (msg) => {
       msg.author.id === owner_id ||
       msg.author.id === owner_attacker ||
       msg.author.id === owner_c ||
-      msg.author.id === felix
+      msg.author.id === felix || user_admin == true
     ) {
       let embed = new EmbedBuilder()
         .setColor("#21FF00")
@@ -10406,7 +10409,7 @@ function terminate() {
       msg.author.id === owner_id ||
       msg.author.id === owner_attacker ||
       msg.author.id === owner_c ||
-      msg.author.id === felix
+      msg.author.id === felix || user_admin == true
     ) {
       var command = msg.content.split(prefix + "run ").pop();
       console.log(command);
