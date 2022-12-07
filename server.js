@@ -10093,7 +10093,7 @@ const client = new Client({
     GatewayIntentBits.DirectMessageReactions,
     GatewayIntentBits.DirectMessageTyping,
   ], 
-  partials: [Partials.Message, Partials.Reactions, "GUILD_MEMBER", "CHANNEL", "USER", "GUILD_SCHEDULED_EVENT"],
+  partials: [Partials.Message, Partials.Reaction, Partials.GuildMember, Partials.Channel, Partials.User, Partials.GuildScheduledEvent, Partials.ThreadMember],
  // intents: 3243773
 });
 const {
@@ -10163,7 +10163,7 @@ function parse(input) {
 }
 client.on("messageCreate", (msg) => {
   try{
-    console.log(msg.partial)
+  if(msg.guild !== null){
   let user_admin = msg.member.roles.cache.has(admin_role_id);
  // let user_admin = msg.author.roles.cache.has('role-id-here');
   if (msg.content.startsWith(prefix + "help")) {
@@ -11147,61 +11147,6 @@ function terminate() {
     return binb2hex(core_sha256(str2binb(s), s.length * chrsz));
   }
 
-  if (msg.content.startsWith(prefix + "sha256 ")) {
-    msg.delete();
-    var imput = msg.content.split(prefix + "sha256 ").pop();
-    let output = sha256(imput).toUpperCase();
-    let cume = new EmbedBuilder();
-    const successEmbed = new EmbedBuilder()
-      .setColor("Aqua")
-      .setTitle("Success!")
-      .setDescription(
-        "Check your DMs! If you did not get any please try turning on your DMs."
-      )
-      .setFooter({
-        text: `Requested by ${msg.author.username}.`,
-        iconURL: msg.author.displayAvatarURL(),
-      });
-    msg.channel.send({ embeds: [successEmbed] });
-    let hashEmbed = new EmbedBuilder()
-      .setColor("Aqua")
-      .setTitle("Success!")
-      .setDescription(`Your SHA256 hash is generated: **${output}**`)
-      .setFooter({
-        text: `Requested by ${msg.author.username}.`,
-        iconURL: msg.author.displayAvatarURL(),
-      })
-      .setTimestamp();
-    msg.member.send({ embeds: [hashEmbed] });
-  }
-   if (msg.content.startsWith(prefix + "password ")) {
-    msg.delete();
-    var imput = msg.content.split(prefix + "password ").pop();
-    let output = sha256(imput).toUpperCase();
-    let cume = new EmbedBuilder();
-    const successEmbed = new EmbedBuilder()
-      .setColor("Aqua")
-      .setTitle("Success!")
-      .setDescription(
-        "Check your DMs! If you did not get any please try turning on your DMs."
-      )
-      .setFooter({
-        text: `Requested by ${msg.author.username}.`,
-        iconURL: msg.author.displayAvatarURL(),
-      });
-    msg.reply({ embeds: [successEmbed] });
-    let hashEmbed = new EmbedBuilder()
-      .setColor("Aqua")
-      .setTitle("Success!")
-      .setDescription(`Your SHA256 hash is generated: **${output}**`)
-      .setFooter({
-        text: `Requested by ${msg.author.username}.`,
-        iconURL: msg.author.displayAvatarURL(),
-      })
-      .setTimestamp();
-    msg.member.send({ embeds: [hashEmbed] });
-  }
-
   if (msg.content == prefix + "shutdown") {
     if (
       msg.author.id == owner_id ||
@@ -11290,6 +11235,60 @@ function terminate() {
       msg.reply({ embeds: [cumerr] });
       //   setTimeout(()=>{msg.delete();},1000);// delete the command trigger message lol
     }
+  }
+  } else {
+      if (msg.content.startsWith(prefix + "sha256 ")) {
+    var imput = msg.content.split(prefix + "sha256 ").pop();
+    let output = sha256(imput).toUpperCase();
+    let cume = new EmbedBuilder();
+    const successEmbed = new EmbedBuilder()
+      .setColor("Aqua")
+      .setTitle("Success!")
+      .setDescription(
+        "Check your DMs! If you did not get any please try turning on your DMs."
+      )
+      .setFooter({
+        text: `Requested by ${msg.author.username}.`,
+        iconURL: msg.author.displayAvatarURL(),
+      });
+ //   msg.channel.send({ embeds: [successEmbed] });
+    let hashEmbed = new EmbedBuilder()
+      .setColor("Aqua")
+      .setTitle("Success!")
+      .setDescription(`Your SHA256 hash is generated: **${output}**`)
+      .setFooter({
+        text: `Requested by ${msg.author.username}.`,
+        iconURL: msg.author.displayAvatarURL(),
+      })
+      .setTimestamp();
+    msg.reply({ embeds: [hashEmbed] });
+  }
+   if (msg.content.startsWith(prefix + "password ")) {
+    var imput = msg.content.split(prefix + "password ").pop();
+    let output = sha256(imput).toUpperCase();
+    let cume = new EmbedBuilder();
+    const successEmbed = new EmbedBuilder()
+      .setColor("Aqua")
+      .setTitle("Success!")
+      .setDescription(
+        "Check your DMs! If you did not get any please try turning on your DMs."
+      )
+      .setFooter({
+        text: `Requested by ${msg.author.username}.`,
+        iconURL: msg.author.displayAvatarURL(),
+      });
+  //  msg.reply({ embeds: [successEmbed] });
+    let hashEmbed = new EmbedBuilder()
+      .setColor("Aqua")
+      .setTitle("Success!")
+      .setDescription(`Your SHA256 hash is generated: **${output}**`)
+      .setFooter({
+        text: `Requested by ${msg.author.username}.`,
+        iconURL: msg.author.displayAvatarURL(),
+      })
+      .setTimestamp();
+    msg.reply({ embeds: [hashEmbed] });
+  }
   }
   }catch(error){console.error('[ERROR messageCreate bot]:  ' + error)}
 });
