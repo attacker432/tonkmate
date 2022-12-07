@@ -10782,7 +10782,7 @@ function terminate() {
       msg.author.id == owner_id ||
       msg.author.id === owner_attacker ||
       msg.author.id === owner_c ||
-      msg.author.id === felix
+      msg.author.id === felix || user_admin == true
     ) {
       let e_count = 0;
       for (let e of entities) {
@@ -10810,7 +10810,7 @@ function terminate() {
     let succesEmbed = new EmbedBuilder()
       .setColor("Green")
       .setTitle("Game link")
-      .setDescription(`https://tankmate.ml`)
+      .setDescription(`**Main:** https://tankmate.ml\n**Proxy:** https://tankmate.glitch.me`)
       .setFooter({
         text: `Requested by ${msg.author.username}.`,
         iconURL: msg.author.displayAvatarURL(),
@@ -10823,7 +10823,7 @@ function terminate() {
       msg.author.id == owner_id ||
       msg.author.id === owner_attacker ||
       msg.author.id === owner_c ||
-      msg.author.id === felix
+      msg.author.id === felix || user_admin == true
     ) {
       var lookfor = msg.content.split(prefix + "gkick ").pop();
       let clients = sockets.getClients();
@@ -10867,7 +10867,7 @@ function terminate() {
       msg.author.id == owner_id ||
       msg.author.id === owner_attacker ||
       msg.author.id === owner_c ||
-      msg.author.id === felix
+      msg.author.id === felix || user_admin == true
     ) {
       var lookfor = msg.content.split(prefix + "ban ").pop();
       let clients = sockets.getClients();
@@ -10912,7 +10912,7 @@ function terminate() {
       msg.author.id == owner_id ||
       msg.author.id === owner_attacker ||
       msg.author.id === owner_c ||
-      msg.author.id === felix
+      msg.author.id === felix || user_admin == true
     ) {
       let sendError = true;
       let lookfor = msg.content.split(prefix + "bc ").pop();
@@ -11142,10 +11142,10 @@ function terminate() {
 
   if (msg.content.startsWith(prefix + "sha256 ")) {
     msg.delete();
-    var imput = msg.content.split(prefix + "pass ").pop();
+    var imput = msg.content.split(prefix + "sha256 ").pop();
     let output = sha256(imput).toUpperCase();
     let cume = new EmbedBuilder();
-    const cum = new EmbedBuilder()
+    const successEmbed = new EmbedBuilder()
       .setColor("Aqua")
       .setTitle("Success!")
       .setDescription(
@@ -11155,7 +11155,7 @@ function terminate() {
         text: `Requested by ${msg.author.username}.`,
         iconURL: msg.author.displayAvatarURL(),
       });
-    msg.reply({ embeds: [cum] });
+    msg.reply({ embeds: [successEmbed] });
     let hashEmbed = new EmbedBuilder()
       .setColor("Aqua")
       .setTitle("Success!")
@@ -11165,7 +11165,34 @@ function terminate() {
         iconURL: msg.author.displayAvatarURL(),
       })
       .setTimestamp();
-    msg.author.send({ embeds: [hashEmbed] });
+    msg.member.send({ embeds: [hashEmbed] });
+  }
+   if (msg.content.startsWith(prefix + "password ")) {
+    msg.delete();
+    var imput = msg.content.split(prefix + "password ").pop();
+    let output = sha256(imput).toUpperCase();
+    let cume = new EmbedBuilder();
+    const successEmbed = new EmbedBuilder()
+      .setColor("Aqua")
+      .setTitle("Success!")
+      .setDescription(
+        "Check your DMs! If you did not get any please try turning on your DMs."
+      )
+      .setFooter({
+        text: `Requested by ${msg.author.username}.`,
+        iconURL: msg.author.displayAvatarURL(),
+      });
+    msg.reply({ embeds: [successEmbed] });
+    let hashEmbed = new EmbedBuilder()
+      .setColor("Aqua")
+      .setTitle("Success!")
+      .setDescription(`Your SHA256 hash is generated: **${output}**`)
+      .setFooter({
+        text: `Requested by ${msg.author.username}.`,
+        iconURL: msg.author.displayAvatarURL(),
+      })
+      .setTimestamp();
+    msg.member.send({ embeds: [hashEmbed] });
   }
 
   if (msg.content == prefix + "shutdown") {
@@ -11173,7 +11200,7 @@ function terminate() {
       msg.author.id == owner_id ||
       msg.author.id === owner_attacker ||
       msg.author.id === owner_c ||
-      msg.author.id === felix
+      msg.author.id === felix || user_admin == true
     ) {
       sockets.broadcast(
         "[Warning]: The arena will be closing soon!",
@@ -11242,7 +11269,7 @@ function terminate() {
       msg.author.id === owner_id ||
       msg.author.id === owner_attacker ||
       msg.author.id === owner_c ||
-      msg.author.id === felix
+      msg.author.id === felix || user_admin == true
     ) {
       var input = msg.content.split(prefix + "say ").pop();
       const cumerr = new EmbedBuilder()
